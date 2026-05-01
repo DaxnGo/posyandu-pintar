@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Posyandu Pintar 👶🩺
 
-## Getting Started
+**Posyandu Pintar** adalah purwarupa (prototype) sistem informasi klinis yang dirancang khusus untuk memonitor siklus **1000 Hari Pertama Kehidupan (HPK)** pada ibu dan bayi. Sistem ini memfasilitasi pencatatan, pemantauan, dan analisis data kesehatan secara terpusat untuk berbagai peran tenaga kesehatan.
 
-First, run the development server:
+## 🌟 Fitur Utama
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Multi-Role Dashboard:**
+  - **Kader Posyandu**: Antarmuka untuk memantau data lapangan dan input cepat.
+  - **Dokter Puskesmas & Dinas Kesehatan**: Dashboard analitik klinis mendalam (Clinical Data System) dengan visualisasi tren.
+- **Monitoring 1000 HPK**: Pemantauan spesifik dari awal masa kehamilan hingga anak berusia 2 tahun (36 Bulan total).
+- **Analisis Status Gizi (Z-Score)**: Klasifikasi otomatis status gizi bayi (Normal, Terindikasi, Stunting).
+- **Analisis Gizi Ibu**: Klasifikasi status kesehatan ibu (Normal, Malnutrisi/KEK/Anemia).
+- **Visualisasi Data Interaktif**: Grafik tren (*Line Chart*), persentase capaian (*Progress Ring* & *Donut Chart*), dan perbandingan data (*Bar Chart*).
+- **Database Pasien**: Manajemen rekam medis sederhana dengan fitur filter berdasarkan status gizi dan periode pemantauan.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Teknologi yang Digunakan
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Proyek ini dibangun menggunakan teknologi *modern web development*:
+- **[Next.js](https://nextjs.org/)** (App Router) - Framework React
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS untuk styling
+- **[Framer Motion](https://www.framer.com/motion/)** - Animasi interaktif dan transisi halaman yang halus
+- **[Lucide React](https://lucide.dev/)** - Iconography
+- **TypeScript** - Type safety
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Cara Menjalankan Proyek Secara Lokal
 
-## Learn More
+1. **Clone repository ini**
+   ```bash
+   git clone https://github.com/DaxnGo/posyandu-pintar.git
+   cd posyandu-pintar
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Jalankan server pengembangan (development server)**
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Buka [http://localhost:3000](http://localhost:3000) di browser Anda untuk melihat hasilnya.
 
-## Deploy on Vercel
+## 📁 Struktur Direktori Utama
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/app/login` - Halaman autentikasi untuk berbagai peran (Kader, Dokter, Dinas, Admin).
+- `/app/dashboard` - Dashboard utama untuk Kader Posyandu.
+- `/app/dashboard/dokter` - Dashboard Overview khusus untuk Dokter Puskesmas dan Dinas Kesehatan.
+- `/app/dashboard/dokter/tren` - Halaman analitik tren gizi dan statistik semesteran.
+- `/app/dashboard/dokter/database` - Halaman tabel database pasien dengan filter status gizi.
+- `/lib` - Berisi simulasi data (*dummy data*) pasien, bayi, dan ibu untuk keperluan purwarupa.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔒 Privasi dan Keamanan
+Proyek ini didesain sebagai sistem tertutup (*Secure Clinical Environment*). Pada mode produksi (production), sistem ini mewajibkan petugas terdaftar untuk masuk (*login*) sebelum dapat mengakses data pasien guna menjaga kerahasiaan medis.
+
+---
+*© 2026 POSYANDU PINTAR — Dedikasi untuk kesehatan ibu dan anak melalui pemantauan 1000 Hari Pertama Kehidupan yang akurat dan terpercaya.*
