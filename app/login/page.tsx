@@ -212,7 +212,6 @@ export default function LoginPage() {
           {/* Login Button */}
           <motion.button
             whileTap={{ scale: 0.98 }}
-            whileHover={{ brightness: 1.05 }}
             onClick={handleLogin}
           className="w-full bg-[#006C49] hover:bg-[#005a3c] text-white font-semibold py-3 rounded-lg shadow-md transition-colors text-sm"
           >
