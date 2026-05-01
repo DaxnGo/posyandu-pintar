@@ -32,6 +32,10 @@ export default function LoginPage() {
 
   function handleLogin() {
     localStorage.setItem("userRole", activeRole);
+    if (activeRole === "admin") {
+      alert("Akses ke Dashboard Admin Sistem belum tersedia pada versi ini.");
+      return;
+    }
     if (activeRole === "dokter" || activeRole === "dinas") {
       router.push("/dashboard/dokter");
     } else {
