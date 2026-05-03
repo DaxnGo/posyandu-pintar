@@ -127,8 +127,8 @@ export default function DatabasePasien() {
     ? [
         { key: "semua",       label: "Semua",       count: total         },
         { key: "normal",      label: "Normal",       count: normalBayi   },
-        { key: "stunting",    label: "Stunting",     count: stuntingCount },
         { key: "terindikasi", label: "Terindikasi",  count: terindCount  },
+        { key: "stunting",    label: "Stunting",     count: stuntingCount },
       ]
     : [
         { key: "semua",    label: "Semua",       count: total      },
