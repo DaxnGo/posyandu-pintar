@@ -1,5 +1,9 @@
 const dummyDataBayi = [
   { id: 1, periode: "April 2023",   bulanKe: 0,  label_fase: "Baseline Data",              total_subjek: 150, status_normal: 80,  status_terindikasi: 50, status_stunting: 20, capaian_persen: 53.3  },
+  { id: 11, periode: "Mei 2023",     bulanKe: 1,  label_fase: "Intervensi Bulan 2",          total_subjek: 150, status_normal: 90,  status_terindikasi: 40, status_stunting: 20, capaian_persen: 60.0  },
+  { id: 12, periode: "Juni 2023",    bulanKe: 2,  label_fase: "Intervensi Bulan 3",          total_subjek: 150, status_normal: 95,  status_terindikasi: 35, status_stunting: 20, capaian_persen: 63.3  },
+  { id: 13, periode: "Juli 2023",    bulanKe: 3,  label_fase: "Intervensi Bulan 4",          total_subjek: 150, status_normal: 110, status_terindikasi: 20, status_stunting: 20, capaian_persen: 73.3  },
+  { id: 14, periode: "Agustus 2023", bulanKe: 4,  label_fase: "Intervensi Bulan 5",          total_subjek: 150, status_normal: 130, status_terindikasi: 0,  status_stunting: 20, capaian_persen: 86.6  },
   { id: 2, periode: "Oktober 2023", bulanKe: 6,  label_fase: "Intervensi Semester 1",       total_subjek: 150, status_normal: 105, status_terindikasi: 30, status_stunting: 15, capaian_persen: 70.0  },
   { id: 3, periode: "April 2024",   bulanKe: 12, label_fase: "Evaluasi Tahun 1",            total_subjek: 150, status_normal: 118, status_terindikasi: 22, status_stunting: 10, capaian_persen: 78.6  },
   { id: 4, periode: "Oktober 2024", bulanKe: 18, label_fase: "Intervensi Semester 3",       total_subjek: 150, status_normal: 128, status_terindikasi: 16, status_stunting: 6,  capaian_persen: 85.3  },
