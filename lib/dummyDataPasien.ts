@@ -59,7 +59,7 @@ function mk(
 }
 
 // ── 150 Patients ──────────────────────────────────────────────────────────────
-// Distribution at period 0: Normal=90, Terindikasi=40, Stunting=20
+// Distribution at period 0: Normal=80, Terindikasi=50, Stunting=20
 // Ibu malgizi at period 0: 32 → matches dummyDataIbu exactly
 
 const dummyDataPasien: Pasien[] = [
@@ -87,16 +87,16 @@ const dummyDataPasien: Pasien[] = [
   mk("PS-1048","Rara Adinda",    "Sri Lestari",   8, 7.8,68, 0.9,63.0,"03 Okt 2023", bNN, iNN),
 
   // ── Always-Normal bayi, Normal ibu (PS-1049 to PS-1102, 54 pasien) ───────
-  mk("PS-1049","Aditya Putra",   "Wahyuni",       14,10.1,76, 0.4,58.5,"02 Okt 2023", bNN, iNN),
-  mk("PS-1050","Alifa Zahra",    "Rahayu",        21,11.0,82, 0.6,59.0,"02 Okt 2023", bNN, iNN),
-  mk("PS-1051","Andika Saputra", "Neni",          30,12.8,89, 0.2,56.0,"01 Okt 2023", bNN, iNN),
-  mk("PS-1052","Aulia Rahma",    "Sripati",       10, 8.5,72, 0.5,57.0,"01 Okt 2023", bNN, iNN),
-  mk("PS-1053","Aziz Prasetyo",  "Darwati",       19,10.7,80, 0.3,61.0,"30 Sep 2023", bNN, iNN),
-  mk("PS-1054","Bima Sakti",     "Parini",        25,11.6,85, 0.1,55.5,"30 Sep 2023", bNN, iNN),
-  mk("PS-1055","Bunga Citra",    "Karsiti",       16,10.2,78, 0.7,62.0,"29 Sep 2023", bNN, iNN),
-  mk("PS-1056","Candra Wijaya",  "Rasmini",       32,13.0,90, 0.2,58.0,"29 Sep 2023", bNN, iNN),
-  mk("PS-1057","Danu Arya",      "Supatmi",       12, 9.3,74, 0.4,60.0,"28 Sep 2023", bNN, iNN),
-  mk("PS-1058","Dara Cantika",   "Lestari",       20,10.9,81, 0.5,57.5,"28 Sep 2023", bNN, iNN),
+  mk("PS-1049","Aditya Putra",   "Wahyuni",       14,10.1,76,-1.2,58.5,"02 Okt 2023", bT6, iNN),
+  mk("PS-1050","Alifa Zahra",    "Rahayu",        21,11.0,82,-1.4,59.0,"02 Okt 2023", bT6, iNN),
+  mk("PS-1051","Andika Saputra", "Neni",          30,12.8,89,-1.1,56.0,"01 Okt 2023", bT12, iNN),
+  mk("PS-1052","Aulia Rahma",    "Sripati",       10, 8.5,72,-1.3,57.0,"01 Okt 2023", bT12, iNN),
+  mk("PS-1053","Aziz Prasetyo",  "Darwati",       19,10.7,80,-1.5,61.0,"30 Sep 2023", bT18, iNN),
+  mk("PS-1054","Bima Sakti",     "Parini",        25,11.6,85,-1.2,55.5,"30 Sep 2023", bT18, iNN),
+  mk("PS-1055","Bunga Citra",    "Karsiti",       16,10.2,78,-1.4,62.0,"29 Sep 2023", bT24, iNN),
+  mk("PS-1056","Candra Wijaya",  "Rasmini",       32,13.0,90,-1.3,58.0,"29 Sep 2023", bT24, iNN),
+  mk("PS-1057","Danu Arya",      "Supatmi",       12, 9.3,74,-1.1,60.0,"28 Sep 2023", bT6, iNN),
+  mk("PS-1058","Dara Cantika",   "Lestari",       20,10.9,81,-1.5,57.5,"28 Sep 2023", bT6, iNN),
   mk("PS-1059","Devi Nur",       "Sugiarti",      27,12.0,87, 0.3,59.5,"27 Sep 2023", bNN, iNN),
   mk("PS-1060","Dian Purnama",   "Warsiti",       15,10.3,77, 0.6,56.5,"27 Sep 2023", bNN, iNN),
   mk("PS-1061","Difa Ramadan",   "Sutarni",       22,11.2,83, 0.2,60.5,"26 Sep 2023", bNN, iNN),
