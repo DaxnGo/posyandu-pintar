@@ -13,7 +13,7 @@ import dummyDataIbu from "@/lib/dummyDataIbu";
 
 const BULAN_OPTIONS = dummyDataBayi.map((d) => ({
   value: d.bulanKe,
-  label: `${d.periode} (Bulan ke-${d.bulanKe})`,
+  label: `${d.periode} (Bulan ke-${d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe})`,
 }));
 
 // ── SVG Line Chart ────────────────────────────────────────────────────────────

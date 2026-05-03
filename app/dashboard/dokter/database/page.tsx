@@ -258,7 +258,7 @@ export default function DatabasePasien() {
                   >
                     {dummyDataBayi.map((d) => (
                       <option key={d.bulanKe} value={d.bulanKe}>
-                        {d.periode} (Bulan ke-{d.bulanKe === 0 ? "1" : d.bulanKe})
+                        {d.periode} (Bulan ke-{d.bulanKe === 0 ? "1" : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe})
                       </option>
                     ))}
                   </select>
