@@ -362,12 +362,12 @@ export default function DashboardDokter() {
 
                 {/* Bayi Terindikasi */}
                 <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
-                  <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#5DCAA5]" />
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#F39C12]" />
                   <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Bayi Terindikasi</p>
                   <div className="flex items-end gap-3">
                     <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapBayi.status_terindikasi ?? 0}</span>
                     {terindikasiDeltaBayi !== 0 && (
-                      <span className="mb-1 flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ color: "#006C49", backgroundColor: "rgba(93,202,165,0.15)" }}>
+                      <span className="mb-1 flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ color: "#F39C12", backgroundColor: "rgba(243,156,18,0.10)" }}>
                         {terindikasiDeltaBayi > 0 ? `↑ +${terindikasiDeltaBayi}` : `↓ ${terindikasiDeltaBayi}`}
                       </span>
                     )}
