@@ -36,11 +36,11 @@ const bT6: Pasien["statusByPeriod"] = [T,T,T,T,T,N,N,N,N,N,N];
 const bT12: Pasien["statusByPeriod"] = [T,T,T,T,T,T,N,N,N,N,N];
 const bT18: Pasien["statusByPeriod"] = [T,T,T,T,T,T,T,N,N,N,N];
 const bT24: Pasien["statusByPeriod"] = [T,T,T,T,T,T,T,T,N,N,N];
-const bS12: Pasien["statusByPeriod"] = [S,S,S,S,S,N,N,N,N,N,N];
-const bS18: Pasien["statusByPeriod"] = [S,S,S,S,S,S,N,N,N,N,N];
-const bS24: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,N,N,N,N];
-const bS30: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,S,N,N,N];
-const bS36: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,S,S,N,N];
+const bS12: Pasien["statusByPeriod"] = [S,S,S,S,S,S,N,N,N,N,N];
+const bS18: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,N,N,N,N];
+const bS24: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,S,N,N,N];
+const bS30: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,S,S,N,N];
+const bS36: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,S,S,S,N];
 
 // Ibu: malgizi recovery timelines (matches dummyDataIbu progression)
 const iNN: Pasien["statusIbuByPeriod"] = [n,n,n,n,n,n,n,n,n,n,n];
@@ -221,26 +221,26 @@ const dummyDataPasien: Pasien[] = [
   mk("PS-1162","Luki Prasetyo",  "Wainem",        26,11.6,86,-1.8,56.0,"07 Agu 2023", bT_M5, iNN),
 
   // ── Stunting (PS-1163 to PS-1178, 16 pasien) ────────────────────────────
-  // [S,T,N,...] recover Normal at period 12 (4 patients)
-  mk("PS-1163","Mario Andika",   "Sarwati",       24,10.4,81,-2.1,55.0,"06 Agu 2023", bS12, iNN),
-  mk("PS-1164","Nanang Prianto", "Sumiasih",      36,13.5,92,-2.3,57.0,"06 Agu 2023", bS12, iNN),
-  mk("PS-1165","Noval Wijaya",   "Karmini",       18,10.0,78,-2.2,56.5,"05 Agu 2023", bS12, iNN),
-  mk("PS-1166","Okta Ramadhan",  "Sarinem",       30,12.5,89,-2.4,58.0,"05 Agu 2023", bS12, iNN),
-  // [S,S,T,...] recover Normal at period 18 (4 patients)
+  // [S,S,S,S,S,S,N,...] recover Normal at period 12 (4 patients)
+  mk("PS-1163","Mario Andika",   "Sarwati",       24,10.4,81,-2.1,55.0,"06 Agu 2023", bS18, iNN),
+  mk("PS-1164","Nanang Prianto", "Sumiasih",      36,13.5,92,-2.3,57.0,"06 Agu 2023", bS18, iNN),
+  mk("PS-1165","Noval Wijaya",   "Karmini",       18,10.0,78,-2.2,56.5,"05 Agu 2023", bS18, iNN),
+  mk("PS-1166","Okta Ramadhan",  "Sarinem",       30,12.5,89,-2.4,58.0,"05 Agu 2023", bS18, iNN),
+  // [S,S,S,S,S,S,S,N,...] recover Normal at period 18 (4 patients)
   mk("PS-1167","Pandu Wijaya",   "Rusmini",       24,10.3,80,-2.5,55.5,"04 Agu 2023", bS18, iNN),
   mk("PS-1168","Riko Saputra",   "Sumarni",       36,13.2,91,-2.6,57.5,"04 Agu 2023", bS18, iNN),
-  mk("PS-1169","Sandy Pratama",  "Ngatinem",      18, 9.8,77,-2.3,56.0,"03 Agu 2023", bS18, iNN),
-  mk("PS-1170","Teguh Santoso",  "Sriati",        30,12.4,88,-2.5,58.5,"03 Agu 2023", bS18, iNN),
-  // [S,S,S,T,...] recover Normal at period 24 (4 patients)
+  mk("PS-1169","Sandy Pratama",  "Ngatinem",      18, 9.8,77,-2.3,56.0,"03 Agu 2023", bS24, iNN),
+  mk("PS-1170","Teguh Santoso",  "Sriati",        30,12.4,88,-2.5,58.5,"03 Agu 2023", bS24, iNN),
+  // [S,S,S,S,S,S,S,S,N,...] recover Normal at period 24 (4 patients)
   mk("PS-1171","Umar Hakim",     "Partinah",      24,10.2,80,-2.7,55.0,"02 Agu 2023", bS24, iNN),
   mk("PS-1172","Yogi Wahyudi",   "Sariyem",       36,13.0,90,-2.8,57.0,"02 Agu 2023", bS24, iNN),
   mk("PS-1173","Zaki Ramadhan",  "Waginah",       18, 9.7,76,-2.6,56.5,"01 Agu 2023", bS24, iNN),
   mk("PS-1174","Aldi Saputra",   "Darminah",      30,12.3,88,-2.9,58.0,"01 Agu 2023", bS24, iNN),
-  // [S,S,S,S,T,N,N] recover Normal at period 30 (2 patients)
-  mk("PS-1175","Budi Santosa",   "Rusmiyati",     24,10.1,79,-3.0,55.5,"31 Jul 2023", bS30, iNN),
+  // [S,S,S,S,S,S,S,S,S,N,N] recover Normal at period 30 (2 patients)
+  mk("PS-1175","Budi Santosa",   "Rusmiyati",     24,10.1,79,-3.0,55.5,"31 Jul 2023", bS24, iNN),
   mk("PS-1176","Candra Putra",   "Suparni",       36,12.9,89,-2.9,57.5,"31 Jul 2023", bS30, iNN),
-  // [S,S,S,S,S,T,N] recover Normal at period 36 (2 patients)
-  mk("PS-1177","Dani Firmansyah","Katinem",       24,10.0,78,-3.1,55.0,"30 Jul 2023", bS36, iNN),
+  // [S,S,S,S,S,S,S,S,S,S,N] recover Normal at period 36 (2 patients)
+  mk("PS-1177","Dani Firmansyah","Katinem",       24,10.0,78,-3.1,55.0,"30 Jul 2023", bS30, iNN),
   mk("PS-1178","Eko Prasetyo",   "Suratmi",       36,12.7,88,-3.2,56.5,"30 Jul 2023", bS36, iNN),
 ];
 
