@@ -5,16 +5,12 @@ import { motion } from "framer-motion";
 import {
   Bell, HelpCircle, UserCircle, LayoutGrid,
   TrendingUp, Users, LogOut, ChevronDown, MoreVertical,
+  Baby, User,
 } from "lucide-react";
 import dummyDataBayi from "@/lib/dummyDataBayi";
 import dummyDataIbu from "@/lib/dummyDataIbu";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-const BULAN_OPTIONS = dummyDataBayi.map((d) => ({
-  value: d.bulanKe,
-  label: `${d.periode} (Bulan ke-${d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe})`,
-}));
 
 // ── SVG Line Chart ────────────────────────────────────────────────────────────
 
@@ -69,7 +65,7 @@ function LineChart({ selectedBulan }: { selectedBulan: number }) {
       {/* X labels */}
       {dummyDataBayi.map((d) => (
         <text key={d.bulanKe} x={toX(d.bulanKe)} y={h - 4} fontSize={11} fill="#94A3B8" textAnchor="middle">
-          {`Bulan ${d.bulanKe === 0 ? "1" : d.bulanKe}`}
+          {`Bulan ${d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe}`}
         </text>
       ))}
 
@@ -191,6 +187,7 @@ function NavItem({ icon: Icon, label, active = false, href = "#" }: {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function DashboardDokter() {
+  const [activeTab, setActiveTab] = useState<"bayi" | "ibu">("bayi");
   const [selectedBulan, setSelectedBulan] = useState(18); // default: Oktober 2024
   const [userRole, setUserRole] = useState("dokter");
 
@@ -223,7 +220,7 @@ export default function DashboardDokter() {
 
   const pctMalgizi = ((snapIbu.status_malgizi / snapIbu.total_subjek) * 100).toFixed(0);
 
-  const selectedLabel = BULAN_OPTIONS.find((o) => o.value === selectedBulan)?.label ?? "";
+  const selectedPeriode = dummyDataBayi.find((d) => d.bulanKe === selectedBulan)?.periode ?? "";
 
   return (
     <div className="flex h-screen bg-[#F4F7F6] font-sans antialiased overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -263,7 +260,29 @@ export default function DashboardDokter() {
 
         {/* Top Bar */}
         <header className="h-20 bg-white/95 backdrop-blur-sm border-b border-[#BBCABF]/60 shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-between px-8 flex-shrink-0">
-          <h2 className="text-xl font-bold text-[#0B1C30] tracking-tight">Dashboard Overview</h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-xl font-bold text-[#0B1C30] tracking-tight">Dashboard Overview</h2>
+
+            {/* Data Bayi / Data Ibu tabs */}
+            <div className="flex items-center bg-[#F1F5F9] rounded-xl p-1.5 gap-1">
+              {(["bayi", "ibu"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-medium transition-all ${
+                    activeTab === tab
+                      ? "bg-white text-[#059669] font-semibold shadow-sm"
+                      : "text-[#64748B] hover:text-[#334155]"
+                  }`}
+                >
+                  {tab === "bayi"
+                    ? <><Baby className="w-3.5 h-3.5" /><span>Data Bayi</span></>
+                    : <><User className="w-3.5 h-3.5" /><span>Data Ibu</span></>
+                  }
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="flex items-center gap-4 text-slate-500">
             <button className="hover:text-[#006C49] transition-colors"><Bell className="w-5 h-5" /></button>
             <button className="hover:text-[#006C49] transition-colors"><HelpCircle className="w-5 h-5" /></button>
@@ -275,144 +294,124 @@ export default function DashboardDokter() {
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-[960px] mx-auto flex flex-col gap-8">
 
-            {/* Filter Bar */}
+            {/* Period Filter Card */}
             <motion.div
               initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-              className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_4px_12px_-2px_rgba(0,0,0,0.05)] px-5 py-4 flex flex-col gap-3"
+              className="bg-white border border-[#BBCABF]/30 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] px-6 py-6 flex items-center justify-between"
             >
-              {/* Top row: label */}
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-semibold tracking-[0.6px] uppercase text-[#6C7A71]">Periode Pemantauan</span>
-                <span className="text-[11px] font-medium text-[#BBCABF]">— 1000 HPK (36 Bulan)</span>
+              <div className="flex flex-col gap-1">
+                <h3 className="text-xl font-semibold text-[#0B1C30]">Overview {selectedPeriode}</h3>
+                <p className="text-sm text-[#3C4A42]">
+                  Monitoring data {activeTab === "bayi" ? "balita" : "ibu"} per {selectedPeriode}
+                </p>
               </div>
 
-              {/* Period pills */}
-              <div className="flex items-center gap-2">
-                {dummyDataBayi.map((d, idx) => {
-                  const isActive = d.bulanKe === selectedBulan;
-                  const isLast = idx === dummyDataBayi.length - 1;
-                  return (
-                    <div key={d.bulanKe} className="flex items-center gap-2 flex-1">
-                      <motion.button
-                        whileTap={{ scale: 0.96 }}
-                        onClick={() => setSelectedBulan(d.bulanKe)}
-                        className={`relative flex-1 flex flex-col items-center gap-1 px-2 py-2.5 rounded-xl border-2 transition-all ${
-                          isActive
-                            ? "bg-[#006C49] border-[#006C49] text-white shadow-[0_4px_10px_rgba(0,108,73,0.25)]"
-                            : "bg-[#F8FAF9] border-transparent text-[#6C7A71] hover:border-[#BBCABF] hover:bg-white"
-                        }`}
-                      >
-                        {/* Bulan badge */}
-                        <span className={`text-[10px] font-bold tracking-wide ${isActive ? "text-white/70" : "text-[#BBCABF]"}`}>
-                          {d.bulanKe === 0 ? "Awal" : `Bln ${d.bulanKe}`}
-                        </span>
-                        {/* Periode */}
-                        <span className={`text-[11px] font-semibold leading-tight text-center ${isActive ? "text-white" : "text-[#334155]"}`}>
-                          {d.periode.split(" ")[0]}
-                          <br />
-                          {d.periode.split(" ")[1]}
-                        </span>
-                        {/* Capaian */}
-                        <span className={`text-[10px] font-bold mt-0.5 ${isActive ? "text-[#86efac]" : "text-[#27AE60]"}`}>
-                          {d.capaian_persen}%
-                        </span>
-                        {/* Active indicator dot */}
-                        {isActive && (
-                          <motion.span
-                            layoutId="activeDot"
-                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#006C49] border-2 border-white shadow"
-                          />
-                        )}
-                      </motion.button>
-                      {/* Connector line */}
-                      {!isLast && (
-                        <div className="w-3 flex-shrink-0 flex flex-col items-center gap-0.5">
-                          <div className="w-full h-px bg-[#E2E8F0]" />
-                          <ChevronDown className="w-2.5 h-2.5 text-[#CBD5E1] -rotate-90 -mt-0.5" />
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Selected phase label */}
-              <div className="flex items-center gap-2 pt-1 border-t border-[#F1F5F9]">
-                <span className="w-2 h-2 rounded-full bg-[#006C49] flex-shrink-0" />
-                <span className="text-xs text-[#334155] font-medium">
-                  {snapBayi.label_fase}
-                </span>
-                <span className="text-xs text-[#BBCABF]">•</span>
-                <span className="text-xs text-[#6C7A71]">
-                  Capaian bayi normal: <strong className="text-[#006C49]">{snapBayi.capaian_persen}%</strong>
-                </span>
-                <span className="text-xs text-[#BBCABF]">•</span>
-                <span className="text-xs text-[#6C7A71]">
-                  Capaian ibu normal: <strong className="text-[#006C49]">{snapIbu.capaian_persen}%</strong>
-                </span>
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-medium text-[#3C4A42] tracking-wide">Periode Monitoring:</span>
+                <div className="relative">
+                  <select
+                    value={selectedBulan}
+                    onChange={(e) => setSelectedBulan(Number(e.target.value))}
+                    className="appearance-none pl-3 pr-9 py-2 bg-[#F8F9FF] border border-[#BBCABF] rounded-md text-sm text-[#0B1C30] outline-none focus:border-[#006C49] focus:ring-1 focus:ring-[#006C49] cursor-pointer"
+                  >
+                    {dummyDataBayi.map((d) => (
+                      <option key={d.bulanKe} value={d.bulanKe}>
+                        {d.periode} (Bulan ke-{d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe})
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+                </div>
               </div>
             </motion.div>
 
             {/* KPI Row */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
-              className="grid grid-cols-4 gap-6"
-            >
-              {/* Total Pasangan */}
-              <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
-                <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71] leading-tight">Total Pasangan (Ibu & Bayi)</p>
-                <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapBayi.total_subjek}</span>
-                <div className="border-t border-[#BBCABF]/30 pt-3 flex justify-between text-sm text-[#3C4A42]">
-                  <span>Bayi: {snapBayi.total_subjek}</span>
-                  <span>Ibu: {snapIbu.total_subjek}</span>
+            {activeTab === "bayi" ? (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
+                className="grid grid-cols-3 gap-6"
+              >
+                {/* Total Bayi */}
+                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
+                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71] leading-tight">Total Bayi</p>
+                  <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapBayi.total_subjek}</span>
+                  <div className="border-t border-[#BBCABF]/30 pt-3 flex justify-center text-sm text-[#3C4A42]">
+                    <span>Dari 1000 HPK</span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Bayi Normal */}
-              <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
-                <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#27AE60]" />
-                <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Bayi Normal</p>
-                <div className="flex items-end gap-3">
-                  <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapBayi.status_normal}</span>
-                  {normalDeltaBayi !== 0 && (
-                    <span className="mb-1 flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ color: "#27AE60", backgroundColor: "rgba(39,174,96,0.10)" }}>
-                      ↑ +{normalDeltaBayi}
+                {/* Bayi Normal */}
+                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#27AE60]" />
+                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Bayi Normal</p>
+                  <div className="flex items-end gap-3">
+                    <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapBayi.status_normal}</span>
+                    {normalDeltaBayi !== 0 && (
+                      <span className="mb-1 flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ color: "#27AE60", backgroundColor: "rgba(39,174,96,0.10)" }}>
+                        ↑ +{normalDeltaBayi}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-[#3C4A42] border-t border-[#BBCABF]/30 pt-3">
+                    {snapBayi.capaian_persen}% Kondisi Ideal
+                  </p>
+                </div>
+
+                {/* Bayi Stunting */}
+                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#E74C3C]" />
+                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Bayi Stunting</p>
+                  <div className="flex items-end gap-3">
+                    <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapBayi.status_stunting}</span>
+                    {stuntingDeltaBayi !== 0 && (
+                      <span className="mb-1 flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ color: "#E74C3C", backgroundColor: "rgba(231,76,60,0.10)" }}>
+                        {stuntingDeltaBayi > 0 ? `↑ +${stuntingDeltaBayi}` : `↓ ${stuntingDeltaBayi}`}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-[#3C4A42] border-t border-[#BBCABF]/30 pt-3">Perlu Intervensi Segera</p>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
+                className="grid grid-cols-3 gap-6"
+              >
+                {/* Total Ibu */}
+                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
+                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71] leading-tight">Total Ibu</p>
+                  <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapIbu.total_subjek}</span>
+                  <div className="border-t border-[#BBCABF]/30 pt-3 flex justify-center text-sm text-[#3C4A42]">
+                    <span>Dari 1000 HPK</span>
+                  </div>
+                </div>
+
+                {/* Ibu Normal */}
+                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#27AE60]" />
+                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Ibu Normal</p>
+                  <div className="flex items-end gap-3">
+                    <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapIbu.status_normal}</span>
+                  </div>
+                  <p className="text-sm text-[#3C4A42] border-t border-[#BBCABF]/30 pt-3">
+                    {snapIbu.capaian_persen}% Kondisi Ideal
+                  </p>
+                </div>
+
+                {/* Ibu Malnutrisi */}
+                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#F39C12]" />
+                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Ibu Malnutrisi</p>
+                  <div className="flex items-end gap-3">
+                    <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapIbu.status_malgizi}</span>
+                    <span className="mb-1 flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ color: "#F39C12", backgroundColor: "rgba(243,156,18,0.10)" }}>
+                      {pctMalgizi}%
                     </span>
-                  )}
+                  </div>
+                  <p className="text-sm text-[#3C4A42] border-t border-[#BBCABF]/30 pt-3">Indikasi KEK / Anemia</p>
                 </div>
-                <p className="text-sm text-[#3C4A42] border-t border-[#BBCABF]/30 pt-3">
-                  {snapBayi.capaian_persen}% Kondisi Ideal
-                </p>
-              </div>
-
-              {/* Bayi Stunting */}
-              <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
-                <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#E74C3C]" />
-                <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Bayi Stunting</p>
-                <div className="flex items-end gap-3">
-                  <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapBayi.status_stunting}</span>
-                  {stuntingDeltaBayi !== 0 && (
-                    <span className="mb-1 flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ color: "#E74C3C", backgroundColor: "rgba(231,76,60,0.10)" }}>
-                      {stuntingDeltaBayi > 0 ? `↑ +${stuntingDeltaBayi}` : `↓ ${stuntingDeltaBayi}`}
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm text-[#3C4A42] border-t border-[#BBCABF]/30 pt-3">Perlu Intervensi Segera</p>
-              </div>
-
-              {/* Ibu Malnutrisi */}
-              <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
-                <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#F39C12]" />
-                <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Ibu Malnutrisi</p>
-                <div className="flex items-end gap-3">
-                  <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapIbu.status_malgizi}</span>
-                  <span className="mb-1 flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ color: "#F39C12", backgroundColor: "rgba(243,156,18,0.10)" }}>
-                    {pctMalgizi}%
-                  </span>
-                </div>
-                <p className="text-sm text-[#3C4A42] border-t border-[#BBCABF]/30 pt-3">Indikasi KEK / Anemia</p>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
 
             {/* Main Chart */}
             <motion.div
@@ -422,7 +421,7 @@ export default function DashboardDokter() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h3 className="text-lg font-bold text-[#0B1C30]">Tren Pemulihan 1000 HPK (36 Bulan)</h3>
-                  <p className="text-xs text-[#6C7A71] mt-0.5">{snapBayi.label_fase} — {selectedLabel}</p>
+                  <p className="text-xs text-[#6C7A71] mt-0.5">{snapBayi.label_fase} — {selectedPeriode}</p>
                 </div>
                 <button className="text-[#6C7A71] hover:text-[#334155] transition-colors">
                   <MoreVertical className="w-5 h-5" />
@@ -432,76 +431,146 @@ export default function DashboardDokter() {
             </motion.div>
 
             {/* Bottom Row */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.15 }}
-              className="grid grid-cols-3 gap-6 pb-4"
-            >
-              {/* Progress Ring */}
-              <div className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col items-center gap-4">
-                <div className="text-center">
-                  <h4 className="text-base font-bold text-[#0B1C30]">Perjalanan Menuju Target Normal</h4>
-                  <p className="text-xs text-[#6C7A71] font-medium mt-1">({snapBayi.total_subjek} Subjek Bayi)</p>
-                </div>
-                <div className="relative">
-                  <ProgressRing value={snapBayi.status_normal} total={snapBayi.total_subjek} />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-5xl font-bold text-[#0B1C30] leading-none">{snapBayi.status_normal}</span>
-                    <div className="border-t border-[#BBCABF]/30 mt-2 pt-1.5 px-4">
-                      <span className="text-sm font-semibold text-[#6C7A71]">/ {snapBayi.total_subjek}</span>
+            {activeTab === "bayi" ? (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.15 }}
+                className="grid grid-cols-3 gap-6 pb-4"
+              >
+                {/* Progress Ring - Bayi */}
+                <div className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col items-center gap-4">
+                  <div className="text-center">
+                    <h4 className="text-base font-bold text-[#0B1C30]">Perjalanan Menuju Target Normal</h4>
+                    <p className="text-xs text-[#6C7A71] font-medium mt-1">({snapBayi.total_subjek} Subjek Bayi)</p>
+                  </div>
+                  <div className="relative">
+                    <ProgressRing value={snapBayi.status_normal} total={snapBayi.total_subjek} />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-5xl font-bold text-[#0B1C30] leading-none">{snapBayi.status_normal}</span>
+                      <div className="border-t border-[#BBCABF]/30 mt-2 pt-1.5 px-4">
+                        <span className="text-sm font-semibold text-[#6C7A71]">/ {snapBayi.total_subjek}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Donut Bayi */}
-              <div className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-5">
-                <div className="border-b border-[#BBCABF]/30 pb-3">
-                  <h4 className="text-base font-bold text-[#0B1C30]">Status Gizi Bayi (Z-Score)</h4>
-                </div>
-                <div className="flex flex-col items-center gap-5">
-                  <DonutChart segments={bayiSegments} total={snapBayi.total_subjek} />
-                  <div className="flex flex-col gap-2.5 w-full px-2">
-                    {[
-                      { label: "Normal",      value: snapBayi.status_normal,      pct: ((snapBayi.status_normal      / snapBayi.total_subjek) * 100).toFixed(1), color: "#27AE60" },
-                      ...(snapBayi.status_terindikasi !== null ? [{ label: "Terindikasi", value: snapBayi.status_terindikasi, pct: ((snapBayi.status_terindikasi / snapBayi.total_subjek) * 100).toFixed(1), color: "#5DCAA5" }] : []),
-                      { label: "Stunting",    value: snapBayi.status_stunting,    pct: ((snapBayi.status_stunting    / snapBayi.total_subjek) * 100).toFixed(1), color: "#E74C3C" },
-                    ].map((item) => (
-                      <div key={item.label} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                          <span className="text-sm text-[#3C4A42]">{item.label}</span>
+                {/* Donut Bayi */}
+                <div className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-5">
+                  <div className="border-b border-[#BBCABF]/30 pb-3">
+                    <h4 className="text-base font-bold text-[#0B1C30]">Status Gizi Bayi (Z-Score)</h4>
+                  </div>
+                  <div className="flex flex-col items-center gap-5">
+                    <DonutChart segments={bayiSegments} total={snapBayi.total_subjek} />
+                    <div className="flex flex-col gap-2.5 w-full px-2">
+                      {[
+                        { label: "Normal",      value: snapBayi.status_normal,      pct: ((snapBayi.status_normal      / snapBayi.total_subjek) * 100).toFixed(1), color: "#27AE60" },
+                        ...(snapBayi.status_terindikasi !== null ? [{ label: "Terindikasi", value: snapBayi.status_terindikasi, pct: ((snapBayi.status_terindikasi / snapBayi.total_subjek) * 100).toFixed(1), color: "#5DCAA5" }] : []),
+                        { label: "Stunting",    value: snapBayi.status_stunting,    pct: ((snapBayi.status_stunting    / snapBayi.total_subjek) * 100).toFixed(1), color: "#E74C3C" },
+                      ].map((item) => (
+                        <div key={item.label} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                            <span className="text-sm text-[#3C4A42]">{item.label}</span>
+                          </div>
+                          <span className="text-sm font-bold text-[#0B1C30]">{item.value} ({item.pct}%)</span>
                         </div>
-                        <span className="text-sm font-bold text-[#0B1C30]">{item.value} ({item.pct}%)</span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Donut Ibu */}
-              <div className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-5">
-                <div className="border-b border-[#BBCABF]/30 pb-3">
-                  <h4 className="text-base font-bold text-[#0B1C30]">Status Gizi Ibu (KEK/Anemia)</h4>
-                </div>
-                <div className="flex flex-col items-center gap-5">
-                  <DonutChart segments={ibuSegments} total={snapIbu.total_subjek} />
-                  <div className="flex flex-col gap-2.5 w-full px-2">
-                    {[
-                      { label: "Normal",     value: snapIbu.status_normal,  pct: ((snapIbu.status_normal  / snapIbu.total_subjek) * 100).toFixed(0), color: "#27AE60" },
-                      { label: "Malnutrisi", value: snapIbu.status_malgizi, pct: ((snapIbu.status_malgizi / snapIbu.total_subjek) * 100).toFixed(0), color: "#F39C12" },
-                    ].map((item) => (
-                      <div key={item.label} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                          <span className="text-sm text-[#3C4A42]">{item.label}</span>
-                        </div>
-                        <span className="text-sm font-bold text-[#0B1C30]">{item.value} ({item.pct}%)</span>
+                {/* Capaian Bayi Summary */}
+                <div className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-5">
+                  <div className="border-b border-[#BBCABF]/30 pb-3">
+                    <h4 className="text-base font-bold text-[#0B1C30]">Target Capaian</h4>
+                  </div>
+                  <div className="flex flex-col gap-5">
+                    <div className="text-center">
+                      <p className="text-xs text-[#6C7A71] font-medium">Progress Menuju Target</p>
+                      <span className="text-5xl font-bold text-[#27AE60] block mt-2">{snapBayi.capaian_persen}%</span>
+                    </div>
+                    <div className="border-t border-[#BBCABF]/30 pt-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-[#3C4A42]">Fase:</span>
+                        <span className="text-sm font-semibold text-[#0B1C30]">{snapBayi.label_fase}</span>
                       </div>
-                    ))}
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-[#3C4A42]">Target:</span>
+                        <span className="text-sm font-semibold text-[#0B1C30]">1000 HPK</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.15 }}
+                className="grid grid-cols-3 gap-6 pb-4"
+              >
+                {/* Progress Ring - Ibu */}
+                <div className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col items-center gap-4">
+                  <div className="text-center">
+                    <h4 className="text-base font-bold text-[#0B1C30]">Perjalanan Menuju Target Normal</h4>
+                    <p className="text-xs text-[#6C7A71] font-medium mt-1">({snapIbu.total_subjek} Subjek Ibu)</p>
+                  </div>
+                  <div className="relative">
+                    <ProgressRing value={snapIbu.status_normal} total={snapIbu.total_subjek} />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-5xl font-bold text-[#0B1C30] leading-none">{snapIbu.status_normal}</span>
+                      <div className="border-t border-[#BBCABF]/30 mt-2 pt-1.5 px-4">
+                        <span className="text-sm font-semibold text-[#6C7A71]">/ {snapIbu.total_subjek}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Donut Ibu */}
+                <div className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-5">
+                  <div className="border-b border-[#BBCABF]/30 pb-3">
+                    <h4 className="text-base font-bold text-[#0B1C30]">Status Gizi Ibu (KEK/Anemia)</h4>
+                  </div>
+                  <div className="flex flex-col items-center gap-5">
+                    <DonutChart segments={ibuSegments} total={snapIbu.total_subjek} />
+                    <div className="flex flex-col gap-2.5 w-full px-2">
+                      {[
+                        { label: "Normal",     value: snapIbu.status_normal,  pct: ((snapIbu.status_normal  / snapIbu.total_subjek) * 100).toFixed(0), color: "#27AE60" },
+                        { label: "Malnutrisi", value: snapIbu.status_malgizi, pct: ((snapIbu.status_malgizi / snapIbu.total_subjek) * 100).toFixed(0), color: "#F39C12" },
+                      ].map((item) => (
+                        <div key={item.label} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                            <span className="text-sm text-[#3C4A42]">{item.label}</span>
+                          </div>
+                          <span className="text-sm font-bold text-[#0B1C30]">{item.value} ({item.pct}%)</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Capaian Ibu Summary */}
+                <div className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-5">
+                  <div className="border-b border-[#BBCABF]/30 pb-3">
+                    <h4 className="text-base font-bold text-[#0B1C30]">Target Capaian</h4>
+                  </div>
+                  <div className="flex flex-col gap-5">
+                    <div className="text-center">
+                      <p className="text-xs text-[#6C7A71] font-medium">Progress Menuju Target</p>
+                      <span className="text-5xl font-bold text-[#27AE60] block mt-2">{snapIbu.capaian_persen}%</span>
+                    </div>
+                    <div className="border-t border-[#BBCABF]/30 pt-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-[#3C4A42]">Fase:</span>
+                        <span className="text-sm font-semibold text-[#0B1C30]">{snapIbu.label_fase}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-[#3C4A42]">Target:</span>
+                        <span className="text-sm font-semibold text-[#0B1C30]">1000 HPK</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
           </div>
         </main>
