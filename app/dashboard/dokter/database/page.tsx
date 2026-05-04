@@ -118,7 +118,7 @@ export default function DatabasePasien() {
 
   const kpi = activeTab === "bayi"
     ? { highlight: normalBayi, highlightLabel: "Target Normal", riskVal: stuntingCount + terindCount,
-        riskLabel: "Sisa Intervensi", riskSub: `${stuntingCount} Stunting · ${terindCount} Terindikasi` }
+        riskLabel: "Sisa Intervensi", riskSub: `${terindCount} Terindikasi · ${stuntingCount} Stunting` }
     : { highlight: normalIbu,  highlightLabel: "Normal Ibu",    riskVal: malgiziCount,
         riskLabel: "Malgizi Ibu",    riskSub: "Kurang Energi / Anemia" };
 
