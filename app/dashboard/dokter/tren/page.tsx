@@ -113,13 +113,19 @@ function NavItem({ icon: Icon, label, active = false, href = "#" }: {
 
 export default function DashboardTren() {
   const [activeTab, setActiveTab] = useState<"bayi" | "ibu">("bayi");
-  const [selectedBulan, setSelectedBulan] = useState(6);
+  const [selectedBulan, setSelectedBulan] = useState(0);
   const [userRole, setUserRole] = useState("dokter");
 
   useEffect(() => {
     const role = localStorage.getItem("userRole");
     if (role) setUserRole(role);
   }, []);
+
+  useEffect(() => {
+    if (activeTab === "ibu" && selectedBulan < 6) {
+      setSelectedBulan(6);
+    }
+  }, [activeTab, selectedBulan]);
 
   const snapBayi = dummyDataBayi.find((d) => d.bulanKe === selectedBulan)!;
   const snapIbu  = dummyDataIbu.find((d)  => d.bulanKe === selectedBulan)!;
@@ -236,7 +242,7 @@ export default function DashboardTren() {
                     onChange={(e) => setSelectedBulan(Number(e.target.value))}
                     className="appearance-none pl-3 pr-9 py-2 bg-[#F8F9FF] border border-[#BBCABF] rounded-md text-sm text-[#0B1C30] outline-none focus:border-[#006C49] focus:ring-1 focus:ring-[#006C49] cursor-pointer"
                   >
-                    {dummyDataBayi.filter(d => d.bulanKe >= 6).map((d) => (
+                    {dummyDataBayi.filter(d => activeTab === "bayi" || d.bulanKe >= 6).map((d) => (
                       <option key={d.bulanKe} value={d.bulanKe}>
                         {d.periode} (Bulan ke-{d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe})
                       </option>

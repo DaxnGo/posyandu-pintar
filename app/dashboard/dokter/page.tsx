@@ -196,6 +196,12 @@ export default function DashboardDokter() {
     if (role) setUserRole(role);
   }, []);
 
+  useEffect(() => {
+    if (activeTab === "ibu" && selectedBulan < 6) {
+      setSelectedBulan(6);
+    }
+  }, [activeTab, selectedBulan]);
+
   const snapBayi = dummyDataBayi.find((d) => d.bulanKe === selectedBulan)!;
   const snapIbu  = dummyDataIbu.find((d)  => d.bulanKe === selectedBulan)!;
 
@@ -310,7 +316,7 @@ export default function DashboardDokter() {
 
               {/* Period pills */}
               <div className="flex items-center gap-3 overflow-x-auto pb-4 pt-2 -mx-2 px-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                {dummyDataBayi.filter(d => d.bulanKe >= 6).map((d, idx, arr) => {
+                {dummyDataBayi.filter(d => activeTab === "bayi" || d.bulanKe >= 6).map((d, idx, arr) => {
                   const isActive = d.bulanKe === selectedBulan;
                   const isLast = idx === arr.length - 1;
                   return (
