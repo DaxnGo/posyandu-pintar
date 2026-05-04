@@ -309,13 +309,16 @@ export default function DashboardDokter() {
               className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_4px_12px_-2px_rgba(0,0,0,0.05)] px-5 py-4 flex flex-col gap-3"
             >
               {/* Top row: label */}
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-semibold tracking-[0.6px] uppercase text-[#6C7A71]">Periode Pemantauan</span>
-                <span className="text-[11px] font-medium text-[#BBCABF]">— 1000 HPK (36 Bulan)</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold tracking-[0.6px] uppercase text-[#6C7A71]">Periode Pemantauan</span>
+                  <span className="text-[11px] font-medium text-[#BBCABF]">— 1000 HPK (36 Bulan)</span>
+                </div>
+                <span className="text-[10px] text-[#94A3B8] italic hidden sm:block animate-pulse">Geser untuk melihat bulan lainnya →</span>
               </div>
 
               {/* Period pills */}
-              <div className="flex items-center gap-3 overflow-x-auto pb-4 pt-2 -mx-2 px-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div className="flex items-center gap-3 overflow-x-auto pb-4 pt-2 -mx-2 px-2 snap-x scroll-smooth [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-[#F1F5F9] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#CBD5E1] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#94A3B8] transition-colors">
                 {dummyDataBayi.filter(d => activeTab === "bayi" || d.bulanKe >= 6).map((d, idx, arr) => {
                   const isActive = d.bulanKe === selectedBulan;
                   const isLast = idx === arr.length - 1;
