@@ -126,7 +126,7 @@ export default function DashboardTren() {
 
   const bayiBars: BarItem[] = [
     { label: "Normal",      value: snapBayi.status_normal,      color: "#27AE60" },
-    { label: "Terindikasi", value: snapBayi.status_terindikasi, color: "#F39C12" },
+    ...(snapBayi.status_terindikasi !== null ? [{ label: "Terindikasi", value: snapBayi.status_terindikasi, color: "#F39C12" }] : []),
     { label: "Stunting",    value: snapBayi.status_stunting,    color: "#E74C3C" },
   ];
 
@@ -138,7 +138,7 @@ export default function DashboardTren() {
   const snap   = activeTab === "bayi" ? snapBayi : snapIbu;
   const bars   = activeTab === "bayi" ? bayiBars  : ibuBars;
   const riskCount = activeTab === "bayi"
-    ? snapBayi.status_terindikasi + snapBayi.status_stunting
+    ? (snapBayi.status_terindikasi ?? 0) + snapBayi.status_stunting
     : snapIbu.status_malgizi;
 
   const selectedPeriode = dummyDataBayi.find((d) => d.bulanKe === selectedBulan)?.periode ?? "";
@@ -310,10 +310,12 @@ export default function DashboardTren() {
                 <div className="border-t border-[#BBCABF]/20 pt-4 mt-4 flex items-center gap-3">
                   {activeTab === "bayi" ? (
                     <>
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-[#F59E0B]" />
-                        <span className="text-xs font-medium text-[#3C4A42]">{snapBayi.status_terindikasi} Indikasi</span>
-                      </div>
+                      {snapBayi.status_terindikasi !== null && (
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-[#F59E0B]" />
+                          <span className="text-xs font-medium text-[#3C4A42]">{snapBayi.status_terindikasi} Indikasi</span>
+                        </div>
+                      )}
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-[#BA1A1A]" />
                         <span className="text-xs font-medium text-[#3C4A42]">{snapBayi.status_stunting} Stunting</span>

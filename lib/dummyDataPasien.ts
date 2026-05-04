@@ -36,11 +36,11 @@ const bT6: Pasien["statusByPeriod"] = [T,T,T,T,T,N,N,N,N,N,N];
 const bT12: Pasien["statusByPeriod"] = [T,T,T,T,T,T,N,N,N,N,N];
 const bT18: Pasien["statusByPeriod"] = [T,T,T,T,T,T,T,N,N,N,N];
 const bT24: Pasien["statusByPeriod"] = [T,T,T,T,T,T,T,T,N,N,N];
-const bS12: Pasien["statusByPeriod"] = [S,S,S,S,S,T,N,N,N,N,N];
-const bS18: Pasien["statusByPeriod"] = [S,S,S,S,S,S,T,N,N,N,N];
-const bS24: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,T,N,N,N];
-const bS30: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,S,T,N,N];
-const bS36: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,S,S,T,N];
+const bS12: Pasien["statusByPeriod"] = [S,S,S,S,S,N,N,N,N,N,N];
+const bS18: Pasien["statusByPeriod"] = [S,S,S,S,S,S,N,N,N,N,N];
+const bS24: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,N,N,N,N];
+const bS30: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,S,N,N,N];
+const bS36: Pasien["statusByPeriod"] = [S,S,S,S,S,S,S,S,S,N,N];
 
 // Ibu: malgizi recovery timelines (matches dummyDataIbu progression)
 const iNN: Pasien["statusIbuByPeriod"] = [n,n,n,n,n,n,n,n,n,n,n];
@@ -69,17 +69,17 @@ function mk(
 const dummyDataPasien: Pasien[] = [
 
   // ── Original 20 (PS-1029 to PS-1048) ────────────────────────────────────
-  mk("PS-1029","Budi Santoso",   "Siti Rahma",   24,10.5,82,-2.1,44.0,"12 Okt 2023", [S,S,S,S,S,S,T,T,N,N,N], iM18),
+  mk("PS-1029","Budi Santoso",   "Siti Rahma",   24,10.5,82,-2.1,44.0,"12 Okt 2023", [S,S,S,S,S,S,N,N,N,N,N], iM18),
   mk("PS-1030","Aisyah Putri",   "Dewi Lestari", 18,11.2,80, 0.5,58.0,"12 Okt 2023", bNN, iNN),
   mk("PS-1031","Rizky Aditya",   "Nurmala",      36,13.0,90,-1.8,47.5,"11 Okt 2023", bT_M2, iM12),
   mk("PS-1032","Sari Kusuma",    "Rina Susanti",  12, 9.0,74, 0.1,55.0,"11 Okt 2023", bNN, iNN),
-  mk("PS-1033","Dwi Saputra",    "Lia Kusuma",   48,14.5,98,-2.3,43.5,"10 Okt 2023", [S,S,S,S,S,S,S,T,T,N,N], iM18),
+  mk("PS-1033","Dwi Saputra",    "Lia Kusuma",   48,14.5,98,-2.3,43.5,"10 Okt 2023", [S,S,S,S,S,S,S,N,N,N,N], iM18),
   mk("PS-1034","Citra Kirana",   "Ani Budiarti",  6, 7.2,65, 0.8,61.0,"10 Okt 2023", bNN, iNN),
   mk("PS-1035","Galih Pratama",  "Sri Wahyuni",  22,11.0,84, 0.2,59.5,"09 Okt 2023", bNN, iNN),
   mk("PS-1036","Nadia Husna",    "Fatimah",      30,12.5,88,-1.9,46.0,"09 Okt 2023", bT_M2, iM12),
   mk("PS-1037","Fajar Nugroho",  "Wulandari",    15,10.0,77, 0.3,57.0,"08 Okt 2023", bNN, iNN),
   mk("PS-1038","Lina Safitri",   "Maryam",       20, 9.8,79,-0.4,52.5,"08 Okt 2023", bNN, iNN),
-  mk("PS-1039","Hendra Kurnia",  "Sumiati",      42,13.8,95,-2.5,45.0,"07 Okt 2023", [S,S,S,S,S,S,T,T,N,N,N], iM12),
+  mk("PS-1039","Hendra Kurnia",  "Sumiati",      42,13.8,95,-2.5,45.0,"07 Okt 2023", [S,S,S,S,S,S,N,N,N,N,N], iM12),
   mk("PS-1040","Putri Ayu",      "Rini Hartati",  9, 8.1,70, 0.6,60.0,"07 Okt 2023", bNN, iNN),
   mk("PS-1041","Bagas Prayoga",  "Endah Sari",   28,11.5,86,-1.5,48.5,"06 Okt 2023", bT_M2, iM6),
   mk("PS-1042","Zahra Kamila",   "Nurhayati",    33,12.2,89, 0.4,56.0,"06 Okt 2023", bNN, iNN),

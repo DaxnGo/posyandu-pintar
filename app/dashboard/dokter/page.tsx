@@ -204,7 +204,7 @@ export default function DashboardDokter() {
 
   const bayiSegments: DonutSegment[] = [
     { value: snapBayi.status_normal,      color: "#27AE60", label: "Normal" },
-    { value: snapBayi.status_terindikasi, color: "#5DCAA5", label: "Terindikasi" },
+    ...(snapBayi.status_terindikasi !== null ? [{ value: snapBayi.status_terindikasi, color: "#5DCAA5", label: "Terindikasi" }] : []),
     { value: snapBayi.status_stunting,    color: "#E74C3C", label: "Stunting" },
   ];
   const ibuSegments: DonutSegment[] = [
@@ -463,7 +463,7 @@ export default function DashboardDokter() {
                   <div className="flex flex-col gap-2.5 w-full px-2">
                     {[
                       { label: "Normal",      value: snapBayi.status_normal,      pct: ((snapBayi.status_normal      / snapBayi.total_subjek) * 100).toFixed(1), color: "#27AE60" },
-                      { label: "Terindikasi", value: snapBayi.status_terindikasi, pct: ((snapBayi.status_terindikasi / snapBayi.total_subjek) * 100).toFixed(1), color: "#5DCAA5" },
+                      ...(snapBayi.status_terindikasi !== null ? [{ label: "Terindikasi", value: snapBayi.status_terindikasi, pct: ((snapBayi.status_terindikasi / snapBayi.total_subjek) * 100).toFixed(1), color: "#5DCAA5" }] : []),
                       { label: "Stunting",    value: snapBayi.status_stunting,    pct: ((snapBayi.status_stunting    / snapBayi.total_subjek) * 100).toFixed(1), color: "#E74C3C" },
                     ].map((item) => (
                       <div key={item.label} className="flex items-center justify-between">
