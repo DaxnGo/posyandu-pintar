@@ -297,34 +297,81 @@ export default function DashboardDokter() {
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-[960px] mx-auto flex flex-col gap-8">
 
-            {/* Period Filter Card */}
+            {/* Filter Bar */}
             <motion.div
               initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-              className="bg-white border border-[#BBCABF]/30 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] px-6 py-6 flex items-center justify-between"
+              className="bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_4px_12px_-2px_rgba(0,0,0,0.05)] px-5 py-4 flex flex-col gap-3"
             >
-              <div className="flex flex-col gap-1">
-                <h3 className="text-xl font-semibold text-[#0B1C30]">Overview {selectedPeriode}</h3>
-                <p className="text-sm text-[#3C4A42]">
-                  Monitoring data {activeTab === "bayi" ? "balita" : "ibu"} per {selectedPeriode}
-                </p>
+              {/* Top row: label */}
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-semibold tracking-[0.6px] uppercase text-[#6C7A71]">Periode Pemantauan</span>
+                <span className="text-[11px] font-medium text-[#BBCABF]">— 1000 HPK (36 Bulan)</span>
               </div>
 
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-medium text-[#3C4A42] tracking-wide">Periode Monitoring:</span>
-                <div className="relative">
-                  <select
-                    value={selectedBulan}
-                    onChange={(e) => setSelectedBulan(Number(e.target.value))}
-                    className="appearance-none pl-3 pr-9 py-2 bg-[#F8F9FF] border border-[#BBCABF] rounded-md text-sm text-[#0B1C30] outline-none focus:border-[#006C49] focus:ring-1 focus:ring-[#006C49] cursor-pointer"
-                  >
-                    {dummyDataBayi.map((d) => (
-                      <option key={d.bulanKe} value={d.bulanKe}>
-                        {d.periode} (Bulan ke-{d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe})
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
-                </div>
+              {/* Period pills */}
+              <div className="flex items-center gap-2">
+                {dummyDataBayi.map((d, idx) => {
+                  const isActive = d.bulanKe === selectedBulan;
+                  const isLast = idx === dummyDataBayi.length - 1;
+                  return (
+                    <div key={d.bulanKe} className="flex items-center gap-2 flex-1">
+                      <motion.button
+                        whileTap={{ scale: 0.96 }}
+                        onClick={() => setSelectedBulan(d.bulanKe)}
+                        className={`relative flex-1 flex flex-col items-center gap-1 px-2 py-2.5 rounded-xl border-2 transition-all ${
+                          isActive
+                            ? "bg-[#006C49] border-[#006C49] text-white shadow-[0_4px_10px_rgba(0,108,73,0.25)]"
+                            : "bg-[#F8FAF9] border-transparent text-[#6C7A71] hover:border-[#BBCABF] hover:bg-white"
+                        }`}
+                      >
+                        {/* Bulan badge */}
+                        <span className={`text-[10px] font-bold tracking-wide ${isActive ? "text-white/70" : "text-[#BBCABF]"}`}>
+                          {`Bln ${d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe}`}
+                        </span>
+                        {/* Periode */}
+                        <span className={`text-[11px] font-semibold leading-tight text-center ${isActive ? "text-white" : "text-[#334155]"}`}>
+                          {d.periode.split(" ")[0]}
+                          <br />
+                          {d.periode.split(" ")[1]}
+                        </span>
+                        {/* Capaian */}
+                        <span className={`text-[10px] font-bold mt-0.5 ${isActive ? "text-[#86efac]" : "text-[#27AE60]"}`}>
+                          {d.capaian_persen}%
+                        </span>
+                        {/* Active indicator dot */}
+                        {isActive && (
+                          <motion.span
+                            layoutId="activeDot"
+                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#006C49] border-2 border-white shadow"
+                          />
+                        )}
+                      </motion.button>
+                      {/* Connector line */}
+                      {!isLast && (
+                        <div className="w-3 flex-shrink-0 flex flex-col items-center gap-0.5">
+                          <div className="w-full h-px bg-[#E2E8F0]" />
+                          <ChevronDown className="w-2.5 h-2.5 text-[#CBD5E1] -rotate-90 -mt-0.5" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Selected phase label */}
+              <div className="flex items-center gap-2 pt-1 border-t border-[#F1F5F9]">
+                <span className="w-2 h-2 rounded-full bg-[#006C49] flex-shrink-0" />
+                <span className="text-xs text-[#334155] font-medium">
+                  {snapBayi.label_fase}
+                </span>
+                <span className="text-xs text-[#BBCABF]">•</span>
+                <span className="text-xs text-[#6C7A71]">
+                  Capaian bayi normal: <strong className="text-[#006C49]">{snapBayi.capaian_persen}%</strong>
+                </span>
+                <span className="text-xs text-[#BBCABF]">•</span>
+                <span className="text-xs text-[#6C7A71]">
+                  Capaian ibu normal: <strong className="text-[#006C49]">{snapIbu.capaian_persen}%</strong>
+                </span>
               </div>
             </motion.div>
 
@@ -334,12 +381,15 @@ export default function DashboardDokter() {
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
                 className="grid grid-cols-4 gap-6"
               >
-                {/* Total Bayi */}
-                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
-                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71] leading-tight">Total Bayi</p>
-                  <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapBayi.total_subjek}</span>
-                  <div className="border-t border-[#BBCABF]/30 pt-3 flex justify-center text-sm text-[#3C4A42]">
-                    <span>Dari 1000 HPK</span>
+                {/* Total Pasangan (Ibu & Bayi) */}
+                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden justify-between">
+                  <div>
+                    <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71] leading-tight">Total Pasangan (Ibu & Bayi)</p>
+                    <span className="text-[40px] font-bold leading-none text-[#0B1C30] block mt-3">{Math.max(snapBayi.total_subjek, snapIbu.total_subjek)}</span>
+                  </div>
+                  <div className="border-t border-[#BBCABF]/30 pt-3 flex items-center justify-between text-sm text-[#3C4A42]">
+                    <span>Bayi: {snapBayi.total_subjek}</span>
+                    <span>Ibu: {snapIbu.total_subjek}</span>
                   </div>
                 </div>
 
@@ -395,12 +445,15 @@ export default function DashboardDokter() {
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
                 className="grid grid-cols-3 gap-6"
               >
-                {/* Total Ibu */}
-                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
-                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71] leading-tight">Total Ibu</p>
-                  <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapIbu.total_subjek}</span>
-                  <div className="border-t border-[#BBCABF]/30 pt-3 flex justify-center text-sm text-[#3C4A42]">
-                    <span>Dari 1000 HPK</span>
+                {/* Total Pasangan (Ibu & Bayi) */}
+                <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden justify-between">
+                  <div>
+                    <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71] leading-tight">Total Pasangan (Ibu & Bayi)</p>
+                    <span className="text-[40px] font-bold leading-none text-[#0B1C30] block mt-3">{Math.max(snapBayi.total_subjek, snapIbu.total_subjek)}</span>
+                  </div>
+                  <div className="border-t border-[#BBCABF]/30 pt-3 flex items-center justify-between text-sm text-[#3C4A42]">
+                    <span>Bayi: {snapBayi.total_subjek}</span>
+                    <span>Ibu: {snapIbu.total_subjek}</span>
                   </div>
                 </div>
 
