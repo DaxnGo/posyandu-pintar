@@ -69,25 +69,25 @@ function mk(
 const dummyDataPasien: Pasien[] = [
 
   // ── Original 20 (PS-1029 to PS-1048) ────────────────────────────────────
-  mk("PS-1029","Budi Santoso",   "Siti Rahma",   24,10.5,82,-2.1,44.0,"12 Okt 2023", [S,S,S,S,S,S,N,N,N,N,N], iM18),
+  mk("PS-1029","Budi Santoso",   "Siti Rahma",   24,10.5,82,-2.1,44.0,"12 Okt 2023", [S,S,S,S,S,S,N,N,N,N,N], iM24),
   mk("PS-1030","Aisyah Putri",   "Dewi Lestari", 18,11.2,80, 0.5,58.0,"12 Okt 2023", bNN, iNN),
-  mk("PS-1031","Rizky Aditya",   "Nurmala",      36,13.0,90,-1.8,47.5,"11 Okt 2023", bT_M2, iM12),
+  mk("PS-1031","Rizky Aditya",   "Nurmala",      36,13.0,90,-1.8,47.5,"11 Okt 2023", bT_M2, iM18),
   mk("PS-1032","Sari Kusuma",    "Rina Susanti",  12, 9.0,74, 0.1,55.0,"11 Okt 2023", bNN, iNN),
-  mk("PS-1033","Dwi Saputra",    "Lia Kusuma",   48,14.5,98,-2.3,43.5,"10 Okt 2023", [S,S,S,S,S,S,S,N,N,N,N], iM18),
+  mk("PS-1033","Dwi Saputra",    "Lia Kusuma",   48,14.5,98,-2.3,43.5,"10 Okt 2023", [S,S,S,S,S,S,S,N,N,N,N], iM24),
   mk("PS-1034","Citra Kirana",   "Ani Budiarti",  6, 7.2,65, 0.8,61.0,"10 Okt 2023", bNN, iNN),
   mk("PS-1035","Galih Pratama",  "Sri Wahyuni",  22,11.0,84, 0.2,59.5,"09 Okt 2023", bNN, iNN),
-  mk("PS-1036","Nadia Husna",    "Fatimah",      30,12.5,88,-1.9,46.0,"09 Okt 2023", bT_M2, iM12),
+  mk("PS-1036","Nadia Husna",    "Fatimah",      30,12.5,88,-1.9,46.0,"09 Okt 2023", bT_M2, iM18),
   mk("PS-1037","Fajar Nugroho",  "Wulandari",    15,10.0,77, 0.3,57.0,"08 Okt 2023", bNN, iNN),
   mk("PS-1038","Lina Safitri",   "Maryam",       20, 9.8,79,-0.4,52.5,"08 Okt 2023", bNN, iNN),
-  mk("PS-1039","Hendra Kurnia",  "Sumiati",      42,13.8,95,-2.5,45.0,"07 Okt 2023", [S,S,S,S,S,S,N,N,N,N,N], iM12),
+  mk("PS-1039","Hendra Kurnia",  "Sumiati",      42,13.8,95,-2.5,45.0,"07 Okt 2023", [S,S,S,S,S,S,N,N,N,N,N], iM18),
   mk("PS-1040","Putri Ayu",      "Rini Hartati",  9, 8.1,70, 0.6,60.0,"07 Okt 2023", bNN, iNN),
-  mk("PS-1041","Bagas Prayoga",  "Endah Sari",   28,11.5,86,-1.5,48.5,"06 Okt 2023", bT_M2, iM6),
+  mk("PS-1041","Bagas Prayoga",  "Endah Sari",   28,11.5,86,-1.5,48.5,"06 Okt 2023", bT_M2, iM12),
   mk("PS-1042","Zahra Kamila",   "Nurhayati",    33,12.2,89, 0.4,56.0,"06 Okt 2023", bNN, iNN),
   mk("PS-1043","Rio Firmansyah", "Kartini",      18,10.3,80,-0.2,54.0,"05 Okt 2023", bNN, iNN),
   mk("PS-1044","Maya Sari",      "Tuti Purwati", 24,11.8,85, 0.7,62.0,"05 Okt 2023", bNN, iNN),
-  mk("PS-1045","Dimas Rahmat",   "Sulastri",     36,14.0,92,-2.2,44.5,"04 Okt 2023", bS12, iM6),
+  mk("PS-1045","Dimas Rahmat",   "Sulastri",     36,14.0,92,-2.2,44.5,"04 Okt 2023", bS12, iM12),
   mk("PS-1046","Indah Permata",  "Hariyati",     12, 8.9,73, 0.0,57.5,"04 Okt 2023", bNN, iNN),
-  mk("PS-1047","Agus Setiawan",  "Dewi Murni",   27,11.3,85,-1.6,46.5,"03 Okt 2023", bT_M2, iM6),
+  mk("PS-1047","Agus Setiawan",  "Dewi Murni",   27,11.3,85,-1.6,46.5,"03 Okt 2023", bT_M2, iM12),
   mk("PS-1048","Rara Adinda",    "Sri Lestari",   8, 7.8,68, 0.9,63.0,"03 Okt 2023", bNN, iNN),
 
   // ── Always-Normal bayi, Normal ibu (PS-1049 to PS-1102, 54 pasien) ───────
@@ -147,32 +147,31 @@ const dummyDataPasien: Pasien[] = [
   mk("PS-1102","Zaki Mubarak",   "Ngatinah",      22,11.2,83, 0.3,57.0,"06 Sep 2023", bNN, iNN),
 
   // ── Always-Normal bayi, Malgizi ibu (PS-1103 to PS-1126, 24 pasien) ──────
-  // Recover at period 6 (2 patients)
-  mk("PS-1103","Alya Ramadhani", "Sunarsih",      16,10.2,78, 0.4,42.0,"05 Sep 2023", bNN, iM6),
-  mk("PS-1104","Andini Putri",   "Tugiyem",       24,11.4,84, 0.5,43.5,"05 Sep 2023", bNN, iM6),
-  // Recover at period 12 (3 patients)
+  // Recover at period 12 (7 patients)
+  mk("PS-1103","Alya Ramadhani", "Sunarsih",      16,10.2,78, 0.4,42.0,"05 Sep 2023", bNN, iM12),
+  mk("PS-1104","Andini Putri",   "Tugiyem",       24,11.4,84, 0.5,43.5,"05 Sep 2023", bNN, iM12),
   mk("PS-1105","Azka Fahri",     "Tasripin",      18,10.6,80, 0.3,44.0,"04 Sep 2023", bNN, iM12),
   mk("PS-1106","Bagas Setiawan", "Sukartini",     29,12.4,88, 0.2,43.0,"04 Sep 2023", bNN, iM12),
-  mk("PS-1107","Dani Kurniawan", "Tumisih",       12, 9.2,74, 0.5,42.5,"03 Sep 2023", bNN, iM12),
-  // Recover at period 18 (4 patients)
+  mk("PS-1107","Dani Kurniawan", "Tumisih",       12, 9.2,74, 0.5,42.5,"03 Sep 2023", bNN, iM18),
+  // Recover at period 18 (6 patients total including 3 from earlier and 1 above)
   mk("PS-1108","Elang Saputra",  "Parinem",       20,10.9,81, 0.4,45.0,"03 Sep 2023", bNN, iM18),
   mk("PS-1109","Fadzil Rasyid",  "Suwati",        31,12.8,90, 0.1,44.5,"02 Sep 2023", bNN, iM18),
-  mk("PS-1110","Gemilang Arya",  "Supini",        15,10.1,77, 0.6,43.0,"02 Sep 2023", bNN, iM18),
-  mk("PS-1111","Hamid Fauzan",   "Marjinah",      25,11.6,86, 0.3,42.0,"01 Sep 2023", bNN, iM18),
-  // Recover at period 24 (6 patients)
+  // Recover at period 24 (7 patients total including 2 from earlier)
+  mk("PS-1110","Gemilang Arya",  "Supini",        15,10.1,77, 0.6,43.0,"02 Sep 2023", bNN, iM24),
+  mk("PS-1111","Hamid Fauzan",   "Marjinah",      25,11.6,86, 0.3,42.0,"01 Sep 2023", bNN, iM24),
   mk("PS-1112","Husna Azizah",   "Sroeni",         9, 8.3,70, 0.5,44.0,"01 Sep 2023", bNN, iM24),
   mk("PS-1113","Ibnu Hajar",     "Sumiyati",      22,11.1,83, 0.2,43.5,"31 Agu 2023", bNN, iM24),
   mk("PS-1114","Imam Wahyudi",   "Rupinem",       17,10.4,79, 0.4,42.5,"31 Agu 2023", bNN, iM24),
-  mk("PS-1115","Karin Sari",     "Waginah",       28,12.2,87, 0.3,44.0,"30 Agu 2023", bNN, iM24),
-  mk("PS-1116","Kemal Ardiyan",  "Murtiasih",     14,10.0,76, 0.5,43.0,"30 Agu 2023", bNN, iM24),
-  mk("PS-1117","Khansa Fadilla", "Suminih",       23,11.3,84, 0.2,42.0,"29 Agu 2023", bNN, iM24),
-  // Recover at period 30 (5 patients)
+  // Recover at period 30 (6 patients)
+  mk("PS-1115","Karin Sari",     "Waginah",       28,12.2,87, 0.3,44.0,"30 Agu 2023", bNN, iM30),
+  mk("PS-1116","Kemal Ardiyan",  "Murtiasih",     14,10.0,76, 0.5,43.0,"30 Agu 2023", bNN, iM30),
+  mk("PS-1117","Khansa Fadilla", "Suminih",       23,11.3,84, 0.2,42.0,"29 Agu 2023", bNN, iM30),
   mk("PS-1118","Lana Syifa",     "Ngatinem",      19,10.7,80, 0.3,45.0,"29 Agu 2023", bNN, iM30),
   mk("PS-1119","Laras Ayu",      "Ponijem",       26,11.7,86, 0.4,44.5,"28 Agu 2023", bNN, iM30),
   mk("PS-1120","Latifa Zahra",   "Saryati",       11, 8.8,72, 0.6,43.0,"28 Agu 2023", bNN, iM30),
-  mk("PS-1121","Layla Amira",    "Darminah",      33,13.2,91, 0.1,42.5,"27 Agu 2023", bNN, iM30),
-  mk("PS-1122","Muhammad Rafi",  "Tukiyem",       18,10.5,79, 0.4,44.0,"27 Agu 2023", bNN, iM30),
-  // Recover at period 36 (4 patients)
+  // Recover at period 36 (6 patients)
+  mk("PS-1121","Layla Amira",    "Darminah",      33,13.2,91, 0.1,42.5,"27 Agu 2023", bNN, iM36),
+  mk("PS-1122","Muhammad Rafi",  "Tukiyem",       18,10.5,79, 0.4,44.0,"27 Agu 2023", bNN, iM36),
   mk("PS-1123","Noval Ardianto", "Supiyem",       24,11.5,85, 0.2,43.5,"26 Agu 2023", bNN, iM36),
   mk("PS-1124","Pandu Setiawan", "Tumini",        16,10.2,78, 0.5,42.0,"26 Agu 2023", bNN, iM36),
   mk("PS-1125","Qonita Amalia",  "Ngatini",       29,12.4,89, 0.3,44.5,"25 Agu 2023", bNN, iM36),
