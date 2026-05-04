@@ -309,46 +309,46 @@ export default function DashboardDokter() {
               </div>
 
               {/* Period pills */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 overflow-x-auto pb-4 pt-2 -mx-2 px-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {dummyDataBayi.map((d, idx) => {
                   const isActive = d.bulanKe === selectedBulan;
                   const isLast = idx === dummyDataBayi.length - 1;
                   return (
-                    <div key={d.bulanKe} className="flex items-center gap-2 flex-1">
+                    <div key={d.bulanKe} className="flex items-center gap-3 flex-shrink-0 snap-start">
                       <motion.button
                         whileTap={{ scale: 0.96 }}
                         onClick={() => setSelectedBulan(d.bulanKe)}
-                        className={`relative flex-1 flex flex-col items-center gap-1 px-2 py-2.5 rounded-xl border-2 transition-all ${
+                        className={`relative w-[84px] flex flex-col items-center gap-1 px-1 py-2.5 rounded-xl border-2 transition-all ${
                           isActive
                             ? "bg-[#006C49] border-[#006C49] text-white shadow-[0_4px_10px_rgba(0,108,73,0.25)]"
                             : "bg-[#F8FAF9] border-transparent text-[#6C7A71] hover:border-[#BBCABF] hover:bg-white"
                         }`}
                       >
                         {/* Bulan badge */}
-                        <span className={`text-[10px] font-bold tracking-wide ${isActive ? "text-white/70" : "text-[#BBCABF]"}`}>
+                        <span className={`text-[10px] font-bold tracking-wide whitespace-nowrap ${isActive ? "text-white/70" : "text-[#BBCABF]"}`}>
                           {`Bln ${d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe}`}
                         </span>
                         {/* Periode */}
-                        <span className={`text-[11px] font-semibold leading-tight text-center ${isActive ? "text-white" : "text-[#334155]"}`}>
+                        <span className={`text-[11px] font-semibold leading-tight text-center whitespace-nowrap ${isActive ? "text-white" : "text-[#334155]"}`}>
                           {d.periode.split(" ")[0]}
                           <br />
                           {d.periode.split(" ")[1]}
                         </span>
                         {/* Capaian */}
-                        <span className={`text-[10px] font-bold mt-0.5 ${isActive ? "text-[#86efac]" : "text-[#27AE60]"}`}>
+                        <span className={`text-[10px] font-bold mt-0.5 whitespace-nowrap ${isActive ? "text-[#86efac]" : "text-[#27AE60]"}`}>
                           {d.capaian_persen}%
                         </span>
                         {/* Active indicator dot */}
                         {isActive && (
                           <motion.span
                             layoutId="activeDot"
-                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#006C49] border-2 border-white shadow"
+                            className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#006C49] border-2 border-white shadow-sm"
                           />
                         )}
                       </motion.button>
                       {/* Connector line */}
                       {!isLast && (
-                        <div className="w-3 flex-shrink-0 flex flex-col items-center gap-0.5">
+                        <div className="w-4 flex-shrink-0 flex flex-col items-center gap-0.5">
                           <div className="w-full h-px bg-[#E2E8F0]" />
                           <ChevronDown className="w-2.5 h-2.5 text-[#CBD5E1] -rotate-90 -mt-0.5" />
                         </div>
