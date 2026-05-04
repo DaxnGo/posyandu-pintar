@@ -12,85 +12,109 @@ import dummyDataIbu from "@/lib/dummyDataIbu";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-// ── SVG Line Chart ────────────────────────────────────────────────────────────
+// ── Stacked Bar Chart ────────────────────────────────────────────────────────────
 
-function LineChart({ selectedBulan }: { selectedBulan: number }) {
+function TrendChart({ selectedBulan, activeTab }: { selectedBulan: number; activeTab: "bayi" | "ibu" }) {
   const w = 910;
   const h = 280;
-  const padL = 52;
+  const padL = 40;
   const padR = 20;
-  const padT = 16;
-  const padB = 36;
+  const padT = 20;
+  const padB = 30;
   const chartW = w - padL - padR;
   const chartH = h - padT - padB;
 
-  const yLabels = ["0%", "20%", "40%", "60%", "80%", "100%"];
+  const displayData = activeTab === "bayi" 
+    ? dummyDataBayi 
+    : dummyDataIbu.filter((d) => d.bulanKe >= 6);
 
-  const toX = (bulanKe: number) => padL + (bulanKe / 36) * chartW;
-  const toY = (pct: number) => padT + (1 - pct / 100) * chartH;
-
-  // Build smooth cubic bezier path from data points
-  const pts = dummyDataBayi.map((d) => [toX(d.bulanKe), toY(d.capaian_persen)] as [number, number]);
-  let pathD = `M ${pts[0][0]},${pts[0][1]}`;
-  for (let i = 1; i < pts.length; i++) {
-    const cpx = (pts[i - 1][0] + pts[i][0]) / 2;
-    pathD += ` C ${cpx},${pts[i - 1][1]} ${cpx},${pts[i][1]} ${pts[i][0]},${pts[i][1]}`;
-  }
-  const areaD = `${pathD} L${pts[pts.length - 1][0]},${padT + chartH} L${pts[0][0]},${padT + chartH} Z`;
-
-  const selectedPt = dummyDataBayi.find((d) => d.bulanKe === selectedBulan);
-  const selX = selectedPt ? toX(selectedPt.bulanKe) : null;
-  const selY = selectedPt ? toY(selectedPt.capaian_persen) : null;
+  const yLabels = [0, 30, 60, 90, 120, 150];
+  const maxVal = 150;
+  const scaleY = (val: number) => (val / maxVal) * chartH;
+  
+  const gap = chartW / displayData.length;
+  const barWidth = Math.min(40, gap * 0.55);
 
   return (
     <svg width="100%" viewBox={`0 0 ${w} ${h}`} className="overflow-visible">
-      <defs>
-        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#27AE60" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="#27AE60" stopOpacity="0.02" />
-        </linearGradient>
-      </defs>
-
       {/* Y grid + labels */}
-      {yLabels.map((label, i) => {
-        const y = padT + ((5 - i) / 5) * chartH;
+      {yLabels.map((val) => {
+        const y = padT + chartH - scaleY(val);
         return (
-          <g key={label}>
-            <line x1={padL} y1={y} x2={w - padR} y2={y} stroke="#E2E8F0" strokeWidth={1} />
-            <text x={padL - 8} y={y + 4} fontSize={11} fill="#94A3B8" textAnchor="end">{label}</text>
+          <g key={val}>
+            <line x1={padL} y1={y} x2={w - padR} y2={y} stroke="#E2E8F0" strokeWidth={1} strokeDasharray="4 4" />
+            <text x={padL - 12} y={y + 4} fontSize={11} fill="#94A3B8" textAnchor="end">{val}</text>
           </g>
         );
       })}
 
-      {/* X labels */}
-      {dummyDataBayi.map((d) => (
-        <text key={d.bulanKe} x={toX(d.bulanKe)} y={h - 4} fontSize={11} fill="#94A3B8" textAnchor="middle">
-          {`Bulan ${d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe}`}
-        </text>
-      ))}
+      {/* X axis base line */}
+      <line x1={padL} y1={padT + chartH} x2={w - padR} y2={padT + chartH} stroke="#CBD5E1" strokeWidth={2} />
 
-      {/* Selected bulan vertical guide */}
-      {selX !== null && (
-        <line x1={selX} y1={padT} x2={selX} y2={padT + chartH} stroke="#006C49" strokeWidth={1} strokeDasharray="4 3" opacity={0.4} />
-      )}
-
-      {/* Area */}
-      <path d={areaD} fill="url(#areaGrad)" />
-      {/* Line */}
-      <path d={pathD} fill="none" stroke="#27AE60" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
-
-      {/* Data dots */}
-      {dummyDataBayi.map((d) => {
-        const x = toX(d.bulanKe);
-        const y = toY(d.capaian_persen);
+      {displayData.map((d, idx) => {
+        const cx = padL + gap * idx + gap / 2;
         const isSelected = d.bulanKe === selectedBulan;
+
+        const isBayi = activeTab === "bayi";
+        const nNorm = d.status_normal;
+        const nInd  = isBayi ? (d.status_terindikasi ?? 0) : 0;
+        const nStun = isBayi ? d.status_stunting : (d.status_malgizi ?? 0);
+
+        const hNormRaw = scaleY(nNorm);
+        const hIndRaw  = scaleY(nInd);
+        const hStunRaw = scaleY(nStun);
+
+        const yNormRaw = padT + chartH - hNormRaw;
+        const yIndRaw  = yNormRaw - hIndRaw;
+        const yStunRaw = yIndRaw - hStunRaw;
+
+        const hasStun = hStunRaw > 0;
+        const stunH = hStunRaw;
+        const stunY = yStunRaw;
+
+        const hasInd = hIndRaw > 0;
+        const indH = Math.max(0, hIndRaw - (hasStun ? 2 : 0));
+        const indY = yIndRaw + (hasStun ? 2 : 0);
+
+        const hasAboveNorm = hasStun || hasInd;
+        const normH = Math.max(0, hNormRaw - (hasAboveNorm ? 2 : 0));
+        const normY = yNormRaw + (hasAboveNorm ? 2 : 0);
+
         return (
-          <g key={d.bulanKe}>
-            {isSelected && <circle cx={x} cy={y} r={10} fill="#27AE60" opacity={0.12} />}
-            <circle cx={x} cy={y} r={isSelected ? 6 : 4.5} fill="white" stroke="#27AE60" strokeWidth={2.5} />
+          <g key={d.bulanKe} className="transition-all duration-300">
+            {/* Background Highlight Area */}
             {isSelected && (
-              <text x={x} y={y - 14} fontSize={11} fill="#27AE60" fontWeight="700" textAnchor="middle">
-                {d.capaian_persen}%
+              <rect x={cx - gap/2} y={padT} width={gap} height={chartH} fill="#F8FAFC" rx={6} />
+            )}
+            
+            {/* Normal Bar (Bottom) */}
+            {normH > 0 && (
+              <rect x={cx - barWidth/2} y={normY} width={barWidth} height={normH} fill="#27AE60" 
+                rx={3} opacity={isSelected ? 1 : 0.4}
+              />
+            )}
+            {/* Terindikasi Bar (Middle) */}
+            {indH > 0 && (
+              <rect x={cx - barWidth/2} y={indY} width={barWidth} height={indH} fill="#F39C12" 
+                rx={3} opacity={isSelected ? 1 : 0.7}
+              />
+            )}
+            {/* Stunting / Malgizi Bar (Top) */}
+            {stunH > 0 && (
+              <rect x={cx - barWidth/2} y={stunY} width={barWidth} height={stunH} fill="#E74C3C" 
+                rx={3} opacity={isSelected ? 1 : 0.9}
+              />
+            )}
+
+            {/* X label */}
+            <text x={cx} y={h - 6} fontSize={12} fill={isSelected ? "#006C49" : "#94A3B8"} fontWeight={isSelected ? 700 : 500} textAnchor="middle">
+              Bln {d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe}
+            </text>
+
+            {/* Total Value Annotation if selected */}
+            {isSelected && (
+              <text x={cx} y={stunY - 10} fontSize={13} fill="#0B1C30" fontWeight="bold" textAnchor="middle">
+                {nNorm + nInd + nStun}
               </text>
             )}
           </g>
@@ -505,11 +529,25 @@ export default function DashboardDokter() {
                   <h3 className="text-lg font-bold text-[#0B1C30]">Tren Pemulihan 1000 HPK (36 Bulan)</h3>
                   <p className="text-xs text-[#6C7A71] mt-0.5">{snapBayi.label_fase} — {selectedPeriode}</p>
                 </div>
-                <button className="text-[#6C7A71] hover:text-[#334155] transition-colors">
-                  <MoreVertical className="w-5 h-5" />
-                </button>
+                {/* Legends */}
+                <div className="flex items-center gap-4 border border-[#BBCABF]/40 bg-[#F8F9FF] px-3 py-1.5 rounded-full">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-[#27AE60]"></span>
+                    <span className="text-[11px] font-semibold text-[#3C4A42]">Normal</span>
+                  </div>
+                  {activeTab === "bayi" && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-[#F39C12]"></span>
+                      <span className="text-[11px] font-semibold text-[#3C4A42]">Terindikasi</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-[#E74C3C]"></span>
+                    <span className="text-[11px] font-semibold text-[#3C4A42]">{activeTab === "bayi" ? "Stunting" : "Malgizi"}</span>
+                  </div>
+                </div>
               </div>
-              <LineChart selectedBulan={selectedBulan} />
+              <TrendChart selectedBulan={selectedBulan} activeTab={activeTab} />
             </motion.div>
 
             {/* Bottom Row */}
