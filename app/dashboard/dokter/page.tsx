@@ -93,11 +93,17 @@ function TrendChart({ selectedBulan, activeTab }: { selectedBulan: number; activ
                 <rect x={cx - barWidth/2} y={normY} width={barWidth} height={normH} fill="#27AE60" 
                   rx={3} opacity={isSelected ? 1 : 0.4}
                 />
-                {normH > 12 && (
-                  <text x={cx} y={normY + normH / 2 + 3.5} fontSize={10} fill="white" fontWeight="700" textAnchor="middle" opacity={isSelected ? 1 : 0.8}>
-                    {nNorm}
-                  </text>
-                )}
+                <text 
+                  x={normH > 12 ? cx : cx - barWidth/2 - 6} 
+                  y={normY + normH / 2 + 3.5} 
+                  fontSize={10} 
+                  fill={normH > 12 ? "white" : "#27AE60"} 
+                  fontWeight="700" 
+                  textAnchor={normH > 12 ? "middle" : "end"} 
+                  opacity={isSelected ? 1 : 0.8}
+                >
+                  {nNorm}
+                </text>
               </g>
             )}
             {/* Terindikasi Bar (Middle) */}
@@ -106,11 +112,17 @@ function TrendChart({ selectedBulan, activeTab }: { selectedBulan: number; activ
                 <rect x={cx - barWidth/2} y={indY} width={barWidth} height={indH} fill="#F39C12" 
                   rx={3} opacity={isSelected ? 1 : 0.7}
                 />
-                {indH > 12 && (
-                  <text x={cx} y={indY + indH / 2 + 3.5} fontSize={10} fill="white" fontWeight="700" textAnchor="middle" opacity={isSelected ? 1 : 0.9}>
-                    {nInd}
-                  </text>
-                )}
+                <text 
+                  x={indH > 12 ? cx : cx + barWidth/2 + 6} 
+                  y={indY + indH / 2 + 3.5} 
+                  fontSize={10} 
+                  fill={indH > 12 ? "white" : "#F39C12"} 
+                  fontWeight="700" 
+                  textAnchor={indH > 12 ? "middle" : "start"} 
+                  opacity={isSelected ? 1 : 0.9}
+                >
+                  {nInd}
+                </text>
               </g>
             )}
             {/* Stunting / Malgizi Bar (Top) */}
@@ -119,11 +131,17 @@ function TrendChart({ selectedBulan, activeTab }: { selectedBulan: number; activ
                 <rect x={cx - barWidth/2} y={stunY} width={barWidth} height={stunH} fill="#E74C3C" 
                   rx={3} opacity={isSelected ? 1 : 0.9}
                 />
-                {stunH > 12 && (
-                  <text x={cx} y={stunY + stunH / 2 + 3.5} fontSize={10} fill="white" fontWeight="700" textAnchor="middle" opacity={isSelected ? 1 : 1}>
-                    {nStun}
-                  </text>
-                )}
+                <text 
+                  x={cx} 
+                  y={stunH > 12 ? stunY + stunH / 2 + 3.5 : stunY - 4} 
+                  fontSize={10} 
+                  fill={stunH > 12 ? "white" : "#E74C3C"} 
+                  fontWeight="700" 
+                  textAnchor="middle" 
+                  opacity={isSelected ? 1 : 1}
+                >
+                  {nStun}
+                </text>
               </g>
             )}
 
@@ -134,7 +152,7 @@ function TrendChart({ selectedBulan, activeTab }: { selectedBulan: number; activ
 
             {/* Total Value Annotation if selected */}
             {isSelected && (
-              <text x={cx} y={stunY - 10} fontSize={13} fill="#0B1C30" fontWeight="bold" textAnchor="middle">
+              <text x={cx} y={stunY - (stunH <= 12 && stunH > 0 ? 18 : 10)} fontSize={13} fill="#0B1C30" fontWeight="bold" textAnchor="middle">
                 {nNorm + nInd + nStun}
               </text>
             )}
