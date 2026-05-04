@@ -128,14 +128,14 @@ function TrendChart({ selectedBulan, activeTab }: { selectedBulan: number; activ
             {/* Stunting / Malgizi Bar (Top) */}
             {stunH > 0 && (
               <g>
-                <rect x={cx - barWidth/2} y={stunY} width={barWidth} height={stunH} fill="#E74C3C" 
+                <rect x={cx - barWidth/2} y={stunY} width={barWidth} height={stunH} fill={isBayi ? "#E74C3C" : "#F39C12"} 
                   rx={3} opacity={isSelected ? 1 : 0.9}
                 />
                 <text 
                   x={cx} 
                   y={stunH > 12 ? stunY + stunH / 2 + 3.5 : stunY - 4} 
                   fontSize={10} 
-                  fill={stunH > 12 ? "white" : "#E74C3C"} 
+                  fill={stunH > 12 ? "white" : (isBayi ? "#E74C3C" : "#F39C12")} 
                   fontWeight="700" 
                   textAnchor="middle" 
                   opacity={isSelected ? 1 : 1}
@@ -581,7 +581,7 @@ export default function DashboardDokter() {
                     </div>
                   )}
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-[#E74C3C]"></span>
+                    <span className={`w-2.5 h-2.5 rounded-sm ${activeTab === "bayi" ? "bg-[#E74C3C]" : "bg-[#F39C12]"}`}></span>
                     <span className="text-[11px] font-semibold text-[#3C4A42]">{activeTab === "bayi" ? "Stunting" : "Malgizi"}</span>
                   </div>
                 </div>
