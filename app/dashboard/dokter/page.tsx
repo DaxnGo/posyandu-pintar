@@ -51,7 +51,7 @@ function TrendChart({ selectedBulan, activeTab }: { selectedBulan: number; activ
       {/* X axis base line */}
       <line x1={padL} y1={padT + chartH} x2={w - padR} y2={padT + chartH} stroke="#CBD5E1" strokeWidth={2} />
 
-      {displayData.map((d, idx) => {
+      {displayData.map((d: any, idx) => {
         const cx = padL + gap * idx + gap / 2;
         const isSelected = d.bulanKe === selectedBulan;
 
