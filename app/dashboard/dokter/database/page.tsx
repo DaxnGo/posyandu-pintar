@@ -253,12 +253,12 @@ export default function DatabasePasien() {
             >
               {/* Dropdown */}
               <div className="flex items-center gap-3">
-                <div className="relative flex items-center gap-2 bg-white border border-[#BBCABF] rounded-lg px-4 py-2.5 shadow-sm">
-                  <span className="text-xs font-medium text-[#6C7A71] whitespace-nowrap">Periode Monitoring:</span>
+                <span className="text-xs font-medium text-[#3C4A42] tracking-wide">Periode Monitoring:</span>
+                <div className="relative">
                   <select
                     value={pendingBulan}
                     onChange={(e) => setPendingBulan(Number(e.target.value))}
-                    className="appearance-none bg-transparent text-sm font-semibold text-[#0B1C30] outline-none pr-5 cursor-pointer"
+                    className="appearance-none pl-3 pr-9 py-2 bg-[#F8F9FF] border border-[#BBCABF] rounded-md text-sm text-[#0B1C30] outline-none focus:border-[#006C49] focus:ring-1 focus:ring-[#006C49] cursor-pointer"
                   >
                     {dummyDataBayi.filter(d => activeTab === "bayi" || d.bulanKe >= 6).map((d) => (
                       <option key={d.bulanKe} value={d.bulanKe}>
