@@ -140,6 +140,10 @@ export default function DatabasePasien() {
     setActiveTab(tab);
     setFilter("semua");
     setPage(1);
+    if (tab === "ibu") {
+      if (pendingBulan < 6) setPendingBulan(6);
+      if (activeBulan < 6) setActiveBulan(6);
+    }
   }
 
   function handleFilter(key: string) {
@@ -256,7 +260,7 @@ export default function DatabasePasien() {
                     onChange={(e) => setPendingBulan(Number(e.target.value))}
                     className="appearance-none bg-transparent text-sm font-semibold text-[#0B1C30] outline-none pr-5 cursor-pointer"
                   >
-                    {dummyDataBayi.map((d) => (
+                    {dummyDataBayi.filter(d => activeTab === "bayi" || d.bulanKe >= 6).map((d) => (
                       <option key={d.bulanKe} value={d.bulanKe}>
                         {d.periode} (Bulan ke-{d.bulanKe === 0 ? "1" : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe})
                       </option>
