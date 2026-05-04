@@ -119,7 +119,9 @@ function DonutChart({ segments, total }: { segments: DonutSegment[]; total: numb
         {segments.map((seg, i) => {
           if (seg.value === 0) return null;
           const arcLen = (seg.value / total) * circumference;
-          const dashLen = Math.max(arcLen - gap, 0);
+          // Apply gap only if it's not a full circle
+          const isFullCircle = seg.value === total;
+          const dashLen = isFullCircle ? circumference : Math.max(arcLen - gap, 0);
           const dashOffset = -cumulative;
           cumulative += arcLen;
           return (
@@ -207,7 +209,7 @@ export default function DashboardDokter() {
 
   const bayiSegments: DonutSegment[] = [
     { value: snapBayi.status_normal,      color: "#27AE60", label: "Normal" },
-    ...(snapBayi.status_terindikasi !== null ? [{ value: snapBayi.status_terindikasi, color: "#5DCAA5", label: "Terindikasi" }] : []),
+    { value: snapBayi.status_terindikasi ?? 0, color: "#F39C12", label: "Terindikasi" },
     { value: snapBayi.status_stunting,    color: "#E74C3C", label: "Stunting" },
   ];
   const ibuSegments: DonutSegment[] = [
@@ -543,7 +545,7 @@ export default function DashboardDokter() {
                     <div className="flex flex-col gap-2.5 w-full px-2">
                       {[
                         { label: "Normal",      value: snapBayi.status_normal,      pct: ((snapBayi.status_normal      / snapBayi.total_subjek) * 100).toFixed(1), color: "#27AE60" },
-                        ...(snapBayi.status_terindikasi !== null ? [{ label: "Terindikasi", value: snapBayi.status_terindikasi, pct: ((snapBayi.status_terindikasi / snapBayi.total_subjek) * 100).toFixed(1), color: "#5DCAA5" }] : []),
+                        { label: "Terindikasi", value: snapBayi.status_terindikasi ?? 0, pct: (((snapBayi.status_terindikasi ?? 0) / snapBayi.total_subjek) * 100).toFixed(1), color: "#F39C12" },
                         { label: "Stunting",    value: snapBayi.status_stunting,    pct: ((snapBayi.status_stunting    / snapBayi.total_subjek) * 100).toFixed(1), color: "#E74C3C" },
                       ].map((item) => (
                         <div key={item.label} className="flex items-center justify-between">
