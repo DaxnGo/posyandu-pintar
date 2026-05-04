@@ -310,9 +310,9 @@ export default function DashboardDokter() {
 
               {/* Period pills */}
               <div className="flex items-center gap-3 overflow-x-auto pb-4 pt-2 -mx-2 px-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                {dummyDataBayi.map((d, idx) => {
+                {dummyDataBayi.filter(d => d.bulanKe >= 6).map((d, idx, arr) => {
                   const isActive = d.bulanKe === selectedBulan;
-                  const isLast = idx === dummyDataBayi.length - 1;
+                  const isLast = idx === arr.length - 1;
                   return (
                     <div key={d.bulanKe} className="flex items-center gap-3 flex-shrink-0 snap-start">
                       <motion.button
