@@ -14,7 +14,7 @@ import dummyDataIbu from "@/lib/dummyDataIbu";
 
 // ── Stacked Bar Chart ────────────────────────────────────────────────────────────
 
-function TrendChart({ selectedBulan, activeTab }: { selectedBulan: number; activeTab: "bayi" | "ibu" }) {
+function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan: number; activeTab: "bayi" | "ibu"; visibleCount: number }) {
   const w = 910;
   const h = 280;
   const padL = 40;
@@ -52,6 +52,7 @@ function TrendChart({ selectedBulan, activeTab }: { selectedBulan: number; activ
       <line x1={padL} y1={padT + chartH} x2={w - padR} y2={padT + chartH} stroke="#CBD5E1" strokeWidth={2} />
 
       {displayData.map((d: any, idx) => {
+        if (idx >= visibleCount) return null;
         const cx = padL + gap * idx + gap / 2;
         const isSelected = d.bulanKe === selectedBulan;
 
@@ -255,6 +256,7 @@ export default function DashboardDokter() {
   const [activeTab, setActiveTab] = useState<"bayi" | "ibu">("bayi");
   const [selectedBulan, setSelectedBulan] = useState(18); // default: Oktober 2024
   const [userRole, setUserRole] = useState("dokter");
+  const [visibleBulanCount, setVisibleBulanCount] = useState(1);
 
   useEffect(() => {
     const role = localStorage.getItem("userRole");
@@ -266,6 +268,10 @@ export default function DashboardDokter() {
       setSelectedBulan(6);
     }
   }, [activeTab, selectedBulan]);
+
+  useEffect(() => {
+    setVisibleBulanCount(1);
+  }, [activeTab]);
 
   const snapBayi = dummyDataBayi.find((d) => d.bulanKe === selectedBulan)!;
   const snapIbu  = dummyDataIbu.find((d)  => d.bulanKe === selectedBulan)!;
@@ -391,7 +397,10 @@ export default function DashboardDokter() {
                     <div key={d.bulanKe} className="flex items-center gap-3 flex-shrink-0 snap-start">
                       <motion.button
                         whileTap={{ scale: 0.96 }}
-                        onClick={() => setSelectedBulan(d.bulanKe)}
+                        onClick={() => {
+                          setSelectedBulan(d.bulanKe);
+                          setVisibleBulanCount(idx + 1);
+                        }}
                         className={`relative w-[84px] flex flex-col items-center gap-1 px-1 py-2.5 rounded-xl border-2 transition-all ${
                           isActive
                             ? "bg-[#006C49] border-[#006C49] text-white shadow-[0_4px_10px_rgba(0,108,73,0.25)]"
@@ -586,7 +595,47 @@ export default function DashboardDokter() {
                   </div>
                 </div>
               </div>
-              <TrendChart selectedBulan={selectedBulan} activeTab={activeTab} />
+              <TrendChart selectedBulan={selectedBulan} activeTab={activeTab} visibleCount={visibleBulanCount} />
+
+              {/* Step-by-step controls */}
+              {(() => {
+                const totalBulan = activeTab === "bayi" ? dummyDataBayi.length : dummyDataIbu.filter((d) => d.bulanKe >= 6).length;
+                return (
+                  <div className="mt-6 flex items-center justify-center gap-4">
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setVisibleBulanCount(Math.max(1, visibleBulanCount - 1))}
+                      disabled={visibleBulanCount <= 1}
+                      className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                        visibleBulanCount <= 1
+                          ? "bg-[#F1F5F9] text-[#CBD5E1] cursor-not-allowed"
+                          : "bg-[#F1F5F9] text-[#006C49] hover:bg-[#E0E7FF] active:scale-95"
+                      }`}
+                    >
+                      ← Sebelumnya
+                    </motion.button>
+
+                    <div className="flex items-center gap-2 px-6 py-2 bg-[#F8F9FF] rounded-lg border border-[#BBCABF]/40">
+                      <span className="text-sm text-[#6C7A71] font-medium">
+                        Menampilkan <span className="font-bold text-[#006C49]">{visibleBulanCount}</span> dari <span className="font-bold text-[#006C49]">{totalBulan}</span> bulan
+                      </span>
+                    </div>
+
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setVisibleBulanCount(Math.min(totalBulan, visibleBulanCount + 1))}
+                      disabled={visibleBulanCount >= totalBulan}
+                      className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                        visibleBulanCount >= totalBulan
+                          ? "bg-[#F1F5F9] text-[#CBD5E1] cursor-not-allowed"
+                          : "bg-[#006C49] text-white hover:bg-[#047857] active:scale-95"
+                      }`}
+                    >
+                      Bulan Berikutnya →
+                    </motion.button>
+                  </div>
+                );
+              })()}
             </motion.div>
 
             {/* Bottom Row */}
