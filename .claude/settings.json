@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "C:\\Users\\ACER\\Documents\\GitHub\\posyandu-pintar"
+    ],
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m 'Remove refactor.py script *)"
+    ]
+  }
+}
