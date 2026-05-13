@@ -91,17 +91,17 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
             {/* Normal Bar (Bottom) */}
             {normH > 0 && (
               <g>
-                <rect x={cx - barWidth/2} y={normY} width={barWidth} height={normH} fill="#27AE60" 
-                  rx={3} opacity={isSelected ? 1 : 0.4}
+                <rect x={cx - barWidth/2} y={normY} width={barWidth} height={normH} fill="#27AE60"
+                  rx={3} opacity={1}
                 />
-                <text 
-                  x={normH > 12 ? cx : cx - barWidth/2 - 6} 
-                  y={normY + normH / 2 + 3.5} 
-                  fontSize={10} 
-                  fill={normH > 12 ? "white" : "#27AE60"} 
-                  fontWeight="700" 
-                  textAnchor={normH > 12 ? "middle" : "end"} 
-                  opacity={isSelected ? 1 : 0.8}
+                <text
+                  x={normH > 12 ? cx : cx - barWidth/2 - 6}
+                  y={normY + normH / 2 + 3.5}
+                  fontSize={10}
+                  fill={normH > 12 ? "white" : "#27AE60"}
+                  fontWeight="700"
+                  textAnchor={normH > 12 ? "middle" : "end"}
+                  opacity={1}
                 >
                   {nNorm}
                 </text>
@@ -110,17 +110,17 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
             {/* Terindikasi Bar (Middle) */}
             {indH > 0 && (
               <g>
-                <rect x={cx - barWidth/2} y={indY} width={barWidth} height={indH} fill="#F39C12" 
-                  rx={3} opacity={isSelected ? 1 : 0.7}
+                <rect x={cx - barWidth/2} y={indY} width={barWidth} height={indH} fill="#F39C12"
+                  rx={3} opacity={1}
                 />
-                <text 
-                  x={indH > 12 ? cx : cx + barWidth/2 + 6} 
-                  y={indY + indH / 2 + 3.5} 
-                  fontSize={10} 
-                  fill={indH > 12 ? "white" : "#F39C12"} 
-                  fontWeight="700" 
-                  textAnchor={indH > 12 ? "middle" : "start"} 
-                  opacity={isSelected ? 1 : 0.9}
+                <text
+                  x={indH > 12 ? cx : cx + barWidth/2 + 6}
+                  y={indY + indH / 2 + 3.5}
+                  fontSize={10}
+                  fill={indH > 12 ? "white" : "#F39C12"}
+                  fontWeight="700"
+                  textAnchor={indH > 12 ? "middle" : "start"}
+                  opacity={1}
                 >
                   {nInd}
                 </text>
@@ -129,17 +129,17 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
             {/* Stunting / Malgizi Bar (Top) */}
             {stunH > 0 && (
               <g>
-                <rect x={cx - barWidth/2} y={stunY} width={barWidth} height={stunH} fill={isBayi ? "#E74C3C" : "#F39C12"} 
-                  rx={3} opacity={isSelected ? 1 : 0.9}
+                <rect x={cx - barWidth/2} y={stunY} width={barWidth} height={stunH} fill={isBayi ? "#E74C3C" : "#F39C12"}
+                  rx={3} opacity={1}
                 />
-                <text 
-                  x={cx} 
-                  y={stunH > 12 ? stunY + stunH / 2 + 3.5 : stunY - 4} 
-                  fontSize={10} 
-                  fill={stunH > 12 ? "white" : (isBayi ? "#E74C3C" : "#F39C12")} 
-                  fontWeight="700" 
-                  textAnchor="middle" 
-                  opacity={isSelected ? 1 : 1}
+                <text
+                  x={cx}
+                  y={stunH > 12 ? stunY + stunH / 2 + 3.5 : stunY - 4}
+                  fontSize={10}
+                  fill={stunH > 12 ? "white" : (isBayi ? "#E74C3C" : "#F39C12")}
+                  fontWeight="700"
+                  textAnchor="middle"
+                  opacity={1}
                 >
                   {nStun}
                 </text>
@@ -599,12 +599,25 @@ export default function DashboardDokter() {
 
               {/* Step-by-step controls */}
               {(() => {
-                const totalBulan = activeTab === "bayi" ? dummyDataBayi.length : dummyDataIbu.filter((d) => d.bulanKe >= 6).length;
+                const displayData = activeTab === "bayi" ? dummyDataBayi : dummyDataIbu.filter((d) => d.bulanKe >= 6);
+                const totalBulan = displayData.length;
+                const handlePrev = () => {
+                  const newCount = Math.max(1, visibleBulanCount - 1);
+                  setVisibleBulanCount(newCount);
+                  const bulanAtIndex = displayData[newCount - 1];
+                  if (bulanAtIndex) setSelectedBulan(bulanAtIndex.bulanKe);
+                };
+                const handleNext = () => {
+                  const newCount = Math.min(totalBulan, visibleBulanCount + 1);
+                  setVisibleBulanCount(newCount);
+                  const bulanAtIndex = displayData[newCount - 1];
+                  if (bulanAtIndex) setSelectedBulan(bulanAtIndex.bulanKe);
+                };
                 return (
                   <div className="mt-6 flex items-center justify-center gap-4">
                     <motion.button
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setVisibleBulanCount(Math.max(1, visibleBulanCount - 1))}
+                      onClick={handlePrev}
                       disabled={visibleBulanCount <= 1}
                       className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                         visibleBulanCount <= 1
@@ -623,7 +636,7 @@ export default function DashboardDokter() {
 
                     <motion.button
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setVisibleBulanCount(Math.min(totalBulan, visibleBulanCount + 1))}
+                      onClick={handleNext}
                       disabled={visibleBulanCount >= totalBulan}
                       className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                         visibleBulanCount >= totalBulan
