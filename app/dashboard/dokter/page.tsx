@@ -254,7 +254,7 @@ function NavItem({ icon: Icon, label, active = false, href = "#" }: {
 
 export default function DashboardDokter() {
   const [activeTab, setActiveTab] = useState<"bayi" | "ibu">("bayi");
-  const [selectedBulan, setSelectedBulan] = useState(18); // default: Oktober 2024
+  const [selectedBulan, setSelectedBulan] = useState(0); // default: Bulan pertama
   const [userRole, setUserRole] = useState("dokter");
   const [visibleBulanCount, setVisibleBulanCount] = useState(1);
 
@@ -271,15 +271,8 @@ export default function DashboardDokter() {
 
   useEffect(() => {
     setVisibleBulanCount(1);
+    setSelectedBulan(0);
   }, [activeTab]);
-
-  useEffect(() => {
-    const displayData = activeTab === "bayi" ? dummyDataBayi : dummyDataIbu.filter((d) => d.bulanKe >= 6);
-    const indexOfSelected = displayData.findIndex((d) => d.bulanKe === selectedBulan);
-    if (indexOfSelected !== -1) {
-      setVisibleBulanCount(indexOfSelected + 1);
-    }
-  }, []);
 
   const snapBayi = dummyDataBayi.find((d) => d.bulanKe === selectedBulan)!;
   const snapIbu  = dummyDataIbu.find((d)  => d.bulanKe === selectedBulan)!;
