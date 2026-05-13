@@ -273,6 +273,14 @@ export default function DashboardDokter() {
     setVisibleBulanCount(1);
   }, [activeTab]);
 
+  useEffect(() => {
+    const displayData = activeTab === "bayi" ? dummyDataBayi : dummyDataIbu.filter((d) => d.bulanKe >= 6);
+    const indexOfSelected = displayData.findIndex((d) => d.bulanKe === selectedBulan);
+    if (indexOfSelected !== -1) {
+      setVisibleBulanCount(indexOfSelected + 1);
+    }
+  }, []);
+
   const snapBayi = dummyDataBayi.find((d) => d.bulanKe === selectedBulan)!;
   const snapIbu  = dummyDataIbu.find((d)  => d.bulanKe === selectedBulan)!;
 
