@@ -24,12 +24,12 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
   const chartW = w - padL - padR;
   const chartH = h - padT - padB;
 
-  const displayData = activeTab === "bayi" 
-    ? dummyDataBayi 
+  const displayData = activeTab === "bayi"
+    ? dummyDataBayi
     : dummyDataIbu.filter((d) => d.bulanKe >= 6);
 
-  const yLabels = [0, 30, 60, 90, 120, 150];
-  const maxVal = 150;
+  const yLabels = [0, 40, 80, 120, 160, 200];
+  const maxVal = 200;
   const scaleY = (val: number) => (val / maxVal) * chartH;
   
   const gap = chartW / displayData.length;
