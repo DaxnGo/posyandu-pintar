@@ -92,7 +92,7 @@ export default function LoginPage() {
             className="flex gap-8 mt-8"
           >
             {[
-              { value: "150", label: "Subjek Aktif" },
+              { value: "200", label: "Subjek Aktif" },
               { value: "36", label: "Bulan Program" },
               { value: "100%", label: "Target HPK" },
             ].map((s) => (

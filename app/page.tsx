@@ -167,7 +167,7 @@ function HeroSection() {
             className="flex flex-wrap items-center gap-6 pt-4"
           >
             {[
-              { value: "150", label: "Subjek Aktif" },
+              { value: "200", label: "Subjek Aktif" },
               { value: "36", label: "Bulan Pantau" },
               { value: "100%", label: "Target Zero Stunting" },
             ].map((s) => (
@@ -275,7 +275,7 @@ function StatisticsSection() {
             </div>
             <div>
               <p className="text-5xl font-black text-[#0B1C30] tracking-tight">
-                150
+                200
               </p>
               <p className="text-base font-bold text-[#0B1C30] mt-1">
                 Subjek Terpantau
@@ -384,8 +384,8 @@ const timelineSteps = [
     phase: "Fase 1",
     title: "Inisiasi & Baseline Data",
     description:
-      "Pendaftaran 150 subjek (ibu hamil & balita) ke dalam sistem. Pengambilan data baseline anthropometri, riwayat gizi, dan faktor risiko keluarga sebagai fondasi analitik.",
-    tags: ["Enrollment", "Baseline", "150 Subjek"],
+      "Pendaftaran 200 subjek (ibu hamil & balita) ke dalam sistem. Pengambilan data baseline anthropometri, riwayat gizi, dan faktor risiko keluarga sebagai fondasi analitik.",
+    tags: ["Enrollment", "Baseline", "200 Subjek"],
     status: "completed",
   },
   {

@@ -241,6 +241,67 @@ const dummyDataPasien: Pasien[] = [
   // [S,S,S,S,S,S,S,S,S,S,N] recover Normal at period 36 (2 patients)
   mk("PS-1177","Dani Firmansyah","Katinem",       24,10.0,78,-3.1,55.0,"30 Jul 2023", bS30, iNN),
   mk("PS-1178","Eko Prasetyo",   "Suratmi",       36,12.7,88,-3.2,56.5,"30 Jul 2023", bS36, iNN),
+
+  // ── Primigravida (50 pasien, PS-2001 to PS-2050) ─────────────────────────
+  // 38 bayi normal (ibu normal), 12 bayi malgizi (ibu malgizi)
+  // Normal bayi + normal ibu (38 pasien)
+  mk("PS-2001","Arya Kusuma",    "Siti Nurhaliza", 12,10.2,78, 0.3,61.0,"29 Jul 2023", bNN, iNN),
+  mk("PS-2002","Bella Safira",   "Indah Pratiwi",  24,11.5,85, 0.5,60.5,"29 Jul 2023", bNN, iNN),
+  mk("PS-2003","Citra Dewi",     "Kusuma Sari",    18,10.7,81, 0.2,59.5,"28 Jul 2023", bNN, iNN),
+  mk("PS-2004","Daffa Hakim",    "Linda Wijaya",   30,12.8,90, 0.4,62.0,"28 Jul 2023", bNN, iNN),
+  mk("PS-2005","Elsa Pramana",   "Maya Hartini",   15,10.0,76, 0.6,58.5,"27 Jul 2023", bNN, iNN),
+  mk("PS-2006","Farah Amalia",   "Nia Kusuma",     22,11.3,83, 0.1,61.5,"27 Jul 2023", bNN, iNN),
+  mk("PS-2007","Giovan Prima",   "Putri Santoso",  28,12.6,89, 0.3,60.0,"26 Jul 2023", bNN, iNN),
+  mk("PS-2008","Hana Berliana",  "Rini Wulandari", 14,10.4,79, 0.5,59.0,"26 Jul 2023", bNN, iNN),
+  mk("PS-2009","Indigo Ramadhan","Sinta Kusuma",   32,13.0,92, 0.2,61.0,"25 Jul 2023", bNN, iNN),
+  mk("PS-2010","Jasmine Aurora", "Titi Hartono",   11, 9.1,73, 0.4,58.0,"25 Jul 2023", bNN, iNN),
+  mk("PS-2011","Kalista Putri",  "Uma Wijaya",     26,11.8,86, 0.6,60.5,"24 Jul 2023", bNN, iNN),
+  mk("PS-2012","Levina Sari",    "Vina Kusuma",    20,10.9,82, 0.3,59.5,"24 Jul 2023", bNN, iNN),
+  mk("PS-2013","Malia Ramadhani","Wati Santoso",   16,10.2,78, 0.2,61.0,"23 Jul 2023", bNN, iNN),
+  mk("PS-2014","Nadia Amira",    "Xenia Putri",    33,13.2,93, 0.5,60.0,"23 Jul 2023", bNN, iNN),
+  mk("PS-2015","Olivia Salsabila","Yuni Kusuma",    9, 8.5,71, 0.4,58.5,"22 Jul 2023", bNN, iNN),
+  mk("PS-2016","Priya Dewi",     "Zakiah Wijaya",  24,11.6,85, 0.3,59.0,"22 Jul 2023", bNN, iNN),
+  mk("PS-2017","Queena Putri",   "Aida Kusuma",    19,10.5,80, 0.6,61.5,"21 Jul 2023", bNN, iNN),
+  mk("PS-2018","Ratna Kusuma",   "Bela Santoso",   31,12.9,91, 0.2,60.5,"21 Jul 2023", bNN, iNN),
+  mk("PS-2019","Savira Putri",   "Cindy Wijaya",   13, 9.8,75, 0.5,59.5,"20 Jul 2023", bNN, iNN),
+  mk("PS-2020","Tisya Amara",    "Diana Kusuma",   27,11.7,87, 0.1,60.0,"20 Jul 2023", bNN, iNN),
+  mk("PS-2021","Ulfa Nabila",    "Eka Santoso",    21,10.8,83, 0.4,61.0,"19 Jul 2023", bNN, iNN),
+  mk("PS-2022","Vanya Salsabila","Fina Wijaya",    17,10.1,79, 0.3,58.5,"19 Jul 2023", bNN, iNN),
+  mk("PS-2023","Wilda Putri",    "Gita Kusuma",    29,12.5,88, 0.6,60.5,"18 Jul 2023", bNN, iNN),
+  mk("PS-2024","Yana Amelia",    "Hesti Santoso",  23,11.4,84, 0.2,59.0,"18 Jul 2023", bNN, iNN),
+  mk("PS-2025","Zahra Ayu",      "Irene Wijaya",   10, 8.9,72, 0.5,61.5,"17 Jul 2023", bNN, iNN),
+  mk("PS-2026","Adelia Putri",   "Jade Kusuma",    25,11.5,86, 0.4,60.0,"17 Jul 2023", bNN, iNN),
+  mk("PS-2027","Beatrice Sari",  "Kara Santoso",   20,10.6,81, 0.3,59.5,"16 Jul 2023", bNN, iNN),
+  mk("PS-2028","Chintya Wijaya", "Lena Wijaya",    34,13.1,94, 0.6,61.0,"16 Jul 2023", bNN, iNN),
+  mk("PS-2029","Dania Amira",    "Mika Kusuma",     8, 8.2,69, 0.2,58.5,"15 Jul 2023", bNN, iNN),
+  mk("PS-2030","Eloisa Putri",   "Nia Santoso",    22,11.2,84, 0.5,60.5,"15 Jul 2023", bNN, iNN),
+  mk("PS-2031","Farida Salsabila","Olivia Wijaya", 18,10.4,80, 0.1,59.0,"14 Jul 2023", bNN, iNN),
+  mk("PS-2032","Gabriella Kusuma","Petra Kusuma",  30,12.7,89, 0.4,61.5,"14 Jul 2023", bNN, iNN),
+  mk("PS-2033","Helena Putri",   "Quincy Santoso", 12, 9.3,74, 0.6,60.0,"13 Jul 2023", bNN, iNN),
+  mk("PS-2034","Iris Amelia",    "Risa Wijaya",    26,11.9,87, 0.3,59.5,"13 Jul 2023", bNN, iNN),
+  mk("PS-2035","Jasmine Putri",  "Stella Kusuma",  16,10.3,79, 0.2,61.0,"12 Jul 2023", bNN, iNN),
+  mk("PS-2036","Kristina Dewi",  "Talia Santoso",  28,12.4,88, 0.5,60.5,"12 Jul 2023", bNN, iNN),
+  mk("PS-2037","Lusiana Sari",   "Uma Wijaya",     11, 8.7,73, 0.4,59.5,"11 Jul 2023", bNN, iNN),
+  mk("PS-2038","Mahira Putri",   "Vera Kusuma",    23,11.1,83, 0.3,61.0,"11 Jul 2023", bNN, iNN),
+
+  // Malgizi bayi + malgizi ibu (12 pasien)
+  // 2 pulih di Semester 1 → tampil Normal mulai Semester 2 (iM12)
+  mk("PS-2039","Nadia Kusuma",   "Wilda Kusuma",   19,10.7,81, 0.1,43.0,"10 Jul 2023", bT_M3, iM12),
+  mk("PS-2040","Olivia Putri",   "Xenia Santoso",  25,11.4,85, 0.4,42.5,"10 Jul 2023", bT_M3, iM12),
+  // 4 pulih di Semester 2 → tampil Normal mulai Semester 3 (iM18)
+  mk("PS-2041","Peta Salsabila", "Yuna Wijaya",    13, 9.6,76, 0.3,43.5,"09 Jul 2023", bT_M3, iM18),
+  mk("PS-2042","Reine Amelia",   "Zena Kusuma",    31,12.8,91, 0.5,44.0,"09 Jul 2023", bT_M3, iM18),
+  mk("PS-2043","Saskia Putri",   "Alia Santoso",   21,10.8,82, 0.2,42.0,"08 Jul 2023", bT_M4, iM18),
+  mk("PS-2044","Tania Dewi",     "Bella Wijaya",   17,10.2,79, 0.6,43.0,"08 Jul 2023", bT_M4, iM18),
+  // 4 pulih di Semester 3 → tampil Normal mulai Semester 4 (iM24)
+  mk("PS-2045","Umi Kusuma",     "Citra Kusuma",   27,11.6,86, 0.4,44.5,"07 Jul 2023", bT_M5, iM24),
+  mk("PS-2046","Veda Putri",     "Diana Santoso",  14, 9.9,75, 0.1,42.5,"07 Jul 2023", bT_M5, iM24),
+  mk("PS-2047","Wina Salsabila", "Ella Wijaya",    32,13.0,92, 0.5,43.5,"06 Jul 2023", bT_M4, iM24),
+  mk("PS-2048","Yuki Amelia",    "Fiona Kusuma",   10, 8.6,71, 0.3,44.0,"06 Jul 2023", bT_M4, iM24),
+  // 1 pulih di Semester 4 → tampil Normal mulai Semester 5 (iM30)
+  mk("PS-2049","Zelda Putri",    "Gina Santoso",   24,11.3,84, 0.2,43.0,"05 Jul 2023", bT_M3, iM30),
+  // 1 pulih di Semester 5 → tampil Normal mulai Semester 6 (iM36)
+  mk("PS-2050","Aurora Kusuma",  "Hana Wijaya",    20,10.5,80, 0.4,42.0,"05 Jul 2023", bT_M3, iM36),
 ];
 
 export function getStatusAt(p: Pasien, bulanKe: number): StatusGizi {

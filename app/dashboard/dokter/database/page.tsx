@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Bell, HelpCircle, UserCircle, LayoutGrid,
   TrendingUp, Users, LogOut, ChevronDown,
-  RefreshCw, MoreVertical, Baby, User,
+  RefreshCw, Baby, User,
   CheckCircle2,
 } from "lucide-react";
 import dummyDataPasien, {
@@ -116,34 +116,40 @@ export default function DatabasePasien() {
   const normalIbu     = withStatus.filter((p) => p.statusIbu === "Normal").length;
   const malgiziCount  = withStatus.filter((p) => p.statusIbu === "Malgizi").length;
 
+  // Gravida = PS-1xxx, Primigravida = PS-2xxx
+  const totalGravida      = withStatus.filter((p) => !p.id.startsWith("PS-2")).length;
+  const totalPrimi        = withStatus.filter((p) =>  p.id.startsWith("PS-2")).length;
+  const normalGravida     = withStatus.filter((p) => !p.id.startsWith("PS-2") && p.statusIbu === "Normal").length;
+  const normalPrimi       = withStatus.filter((p) =>  p.id.startsWith("PS-2") && p.statusIbu === "Normal").length;
+  const malgiziGravida    = withStatus.filter((p) => !p.id.startsWith("PS-2") && p.statusIbu === "Malgizi").length;
+  const malgiziPrimi      = withStatus.filter((p) =>  p.id.startsWith("PS-2") && p.statusIbu === "Malgizi").length;
+
   const kpi = activeTab === "bayi"
     ? { highlight: normalBayi, highlightLabel: "Target Normal", riskVal: stuntingCount + terindCount,
         riskLabel: "Sisa Intervensi", riskSub: `${terindCount} Terindikasi · ${stuntingCount} Stunting` }
     : { highlight: normalIbu,  highlightLabel: "Normal Ibu",    riskVal: malgiziCount,
-        riskLabel: "Malgizi Ibu",    riskSub: "Kurang Energi / Anemia" };
+        riskLabel: "Malgizi Ibu",    riskSub: `${malgiziGravida} Gravida · ${malgiziPrimi} Primigravida` };
 
   // ── Filter pills ─────────────────────────────────────────────────────────
   const pills = activeTab === "bayi"
     ? [
-        { key: "semua",       label: "Semua",       count: total         },
-        { key: "normal",      label: "Normal",       count: normalBayi   },
-        { key: "terindikasi", label: "Terindikasi",  count: terindCount  },
-        { key: "stunting",    label: "Stunting",     count: stuntingCount },
+        { key: "semua",       label: "Semua",           count: total         },
+        { key: "normal",      label: "Normal",           count: normalBayi    },
+        { key: "terindikasi", label: "Terindikasi",      count: terindCount   },
+        { key: "stunting",    label: "Stunting",         count: stuntingCount },
       ]
     : [
-        { key: "semua",    label: "Semua",       count: total      },
-        { key: "normal",   label: "Normal Ibu",  count: normalIbu  },
-        { key: "malgizi",  label: "Malgizi Ibu", count: malgiziCount },
+        { key: "semua",          label: "Semua",        count: total         },
+        { key: "gravida",        label: "Gravida",       count: totalGravida  },
+        { key: "primigravida",   label: "Primigravida",  count: totalPrimi    },
+        { key: "normal",         label: "Normal Ibu",    count: normalIbu     },
+        { key: "malgizi",        label: "Malgizi Ibu",   count: malgiziCount  },
       ];
 
   function handleTabChange(tab: "bayi" | "ibu") {
     setActiveTab(tab);
     setFilter("semua");
     setPage(1);
-    if (tab === "ibu") {
-      if (pendingBulan < 6) setPendingBulan(6);
-      if (activeBulan < 6) setActiveBulan(6);
-    }
   }
 
   function handleFilter(key: string) {
@@ -155,11 +161,14 @@ export default function DatabasePasien() {
   const filtered = useMemo(() => {
     const fn = (p: typeof withStatus[0]) => {
       const st = activeTab === "bayi" ? p.status : p.statusIbu;
-      if (filter === "semua")       return true;
-      if (filter === "normal")      return st === "Normal";
-      if (filter === "stunting")    return st === "Stunting";
-      if (filter === "terindikasi") return st === "Terindikasi";
-      if (filter === "malgizi")     return st === "Malgizi";
+      const isGravida = !p.id.startsWith("PS-2");
+      if (filter === "semua")        return true;
+      if (filter === "normal")       return st === "Normal";
+      if (filter === "stunting")     return st === "Stunting";
+      if (filter === "terindikasi")  return st === "Terindikasi";
+      if (filter === "malgizi")      return st === "Malgizi";
+      if (filter === "gravida")      return isGravida;
+      if (filter === "primigravida") return !isGravida;
       return true;
     };
     return withStatus.filter(fn);
@@ -309,7 +318,7 @@ export default function DatabasePasien() {
             <motion.div
               key={activeBulan}
               initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
-              className="grid grid-cols-3 gap-5"
+              className={`grid gap-5 ${activeTab === "ibu" ? "grid-cols-4" : "grid-cols-3"}`}
             >
               {/* Total Database */}
               <div className="bg-white border border-[#BBCABF] rounded-xl p-6 flex flex-col gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
@@ -322,7 +331,11 @@ export default function DatabasePasien() {
                     <span className="text-[40px] font-bold leading-none tracking-tight text-[#0B1C30]">{total}</span>
                     <span className="text-sm font-semibold text-[#6C7A71]">Pairs</span>
                   </div>
-                  <p className="text-xs text-[#94A3B8] mt-1">Monitored infant-parent datasets</p>
+                  {activeTab === "ibu" ? (
+                    <p className="text-xs text-[#94A3B8] mt-1">Gravida: <span className="font-semibold text-[#006C49]">{totalGravida}</span> · Primigravida: <span className="font-semibold text-[#EC4899]">{totalPrimi}</span></p>
+                  ) : (
+                    <p className="text-xs text-[#94A3B8] mt-1">Monitored infant-parent datasets</p>
+                  )}
                 </div>
               </div>
 
@@ -340,11 +353,33 @@ export default function DatabasePasien() {
                     <span className="text-[40px] font-bold leading-none tracking-tight text-[#0B1C30]">{kpi.highlight}</span>
                     <span className="text-sm font-semibold text-[#6C7A71]">{activeTab === "bayi" ? "Bayi" : "Ibu"}</span>
                   </div>
-                  <p className="text-xs text-[#94A3B8] mt-1">
-                    {((kpi.highlight / total) * 100).toFixed(0)}% dari total subjek · <span className="text-[#006C49] font-semibold">{periodLabel}</span>
-                  </p>
+                  {activeTab === "ibu" ? (
+                    <p className="text-xs text-[#94A3B8] mt-1">Gravida: <span className="font-semibold text-[#006C49]">{normalGravida}</span> · Primigravida: <span className="font-semibold text-[#EC4899]">{normalPrimi}</span></p>
+                  ) : (
+                    <p className="text-xs text-[#94A3B8] mt-1">{((kpi.highlight / total) * 100).toFixed(0)}% dari total subjek · <span className="text-[#006C49] font-semibold">{periodLabel}</span></p>
+                  )}
                 </div>
               </div>
+
+              {/* Gravida/Primigravida Malgizi split — only for ibu tab */}
+              {activeTab === "ibu" && (
+                <div className="bg-white border border-[#BBCABF] rounded-xl p-6 flex flex-col gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                  <div className="w-10 h-10 bg-[#FFF0F9] border border-[#FFF0F9] rounded-lg flex items-center justify-center">
+                    <User className="w-[18px] h-[18px] text-[#EC4899]" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <p className="text-[11px] font-bold tracking-[1.1px] uppercase text-[#6C7A71]">Kelompok Ibu</p>
+                    <div className="flex items-baseline gap-2 mt-1">
+                      <span className="text-[28px] font-bold leading-none tracking-tight text-[#006C49]">{totalGravida}</span>
+                      <span className="text-sm font-semibold text-[#6C7A71]">Gravida</span>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-[28px] font-bold leading-none tracking-tight text-[#EC4899]">{totalPrimi}</span>
+                      <span className="text-sm font-semibold text-[#6C7A71]">Primigravida</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Risk count */}
               <div className="bg-white border border-[#BBCABF] rounded-xl p-6 flex flex-col gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
@@ -378,11 +413,11 @@ export default function DatabasePasien() {
                     const isActive = filter === pill.key;
                     return (
                       <motion.button
-                        key={pill.key}
+                        key={`${activeTab}-${pill.key}`}
                         layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleFilter(pill.key)}
                         className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
@@ -416,11 +451,10 @@ export default function DatabasePasien() {
                         { label: "TB",            cls: "text-right"        },
                         ...(activeTab === "bayi"
                           ? [{ label: "Z-SCORE",  cls: "text-right" }]
-                          : [{ label: "BB IBU",   cls: "text-right" }]
+                          : [{ label: "BB IBU",   cls: "text-right" }, { label: "KELOMPOK IBU", cls: "text-center" }]
                         ),
                         { label: "STATUS GIZI",   cls: "text-center"       },
                         { label: "UPDATE",        cls: "text-left"         },
-                        { label: "",              cls: "w-12 text-center"  },
                       ].map((col, i) => (
                         <th key={i} className={`px-4 py-3 text-[10px] font-bold tracking-[0.8px] uppercase text-[#64748B] border-r border-[#F1F5F9] last:border-r-0 ${col.cls}`}>
                           {col.label}
@@ -446,17 +480,23 @@ export default function DatabasePasien() {
                           <td className="px-4 py-3.5 text-[#475569] text-right border-r border-[#F1F5F9] tabular-nums">{row.tb} cm</td>
                           {activeTab === "bayi"
                             ? <td className="px-4 py-3.5 text-right border-r border-[#F1F5F9]"><ZScoreCell value={row.zscore} /></td>
-                            : <td className="px-4 py-3.5 text-[#475569] text-right border-r border-[#F1F5F9] tabular-nums">{row.bbIbu} kg</td>
+                            : <>
+                                <td className="px-4 py-3.5 text-[#475569] text-right border-r border-[#F1F5F9] tabular-nums">{row.bbIbu} kg</td>
+                                <td className="px-4 py-3.5 text-center border-r border-[#F1F5F9]">
+                                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide ${
+                                    row.id.startsWith("PS-2")
+                                      ? "bg-[#FFF0F9] text-[#BE185D]"
+                                      : "bg-[#F0FDF4] text-[#166534]"
+                                  }`}>
+                                    {row.id.startsWith("PS-2") ? "Primigravida" : "Gravida"}
+                                  </span>
+                                </td>
+                              </>
                           }
                           <td className="px-4 py-3.5 text-center border-r border-[#F1F5F9]">
                             <StatusBadge status={status} />
                           </td>
                           <td className="px-4 py-3.5 text-xs text-[#94A3B8] border-r border-[#F1F5F9] whitespace-nowrap">{row.updateDate}</td>
-                          <td className="px-4 py-3.5 text-center">
-                            <button className="text-[#CBD5E1] hover:text-[#64748B] transition-colors rounded-md p-1 hover:bg-[#F1F5F9]">
-                              <MoreVertical className="w-3.5 h-3.5" />
-                            </button>
-                          </td>
                         </tr>
                       );
                     })}
@@ -472,28 +512,18 @@ export default function DatabasePasien() {
               </div>
 
               {/* Pagination */}
-              <div className="px-6 py-4 border-t border-[#E2E8F0] flex items-center justify-between bg-[#FAFAFA]">
-                <span className="text-xs text-[#94A3B8] font-medium">
-                  Menampilkan{" "}
-                  <span className="text-[#334155] font-semibold">
-                    {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)}
-                  </span>{" "}
-                  dari <span className="text-[#334155] font-semibold">{filtered.length}</span> pasien
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="px-4 py-1.5 rounded-lg border border-[#E2E8F0] bg-white text-sm text-[#334155] font-medium hover:bg-[#F8FAFC] hover:border-[#BBCABF] disabled:opacity-35 disabled:cursor-not-allowed transition-all"
-                  >
-                    Sebelumnya
-                  </button>
+              {totalPages > 1 && (
+                <div className="px-6 py-3 border-t border-[#E2E8F0] flex items-center justify-between bg-[#FAFAFA]">
+                  <span className="text-xs text-[#94A3B8] font-medium">
+                    {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)}{" "}
+                    dari <span className="text-[#334155] font-semibold">{filtered.length}</span> pasien
+                  </span>
                   <div className="flex items-center gap-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                       <button
                         key={p}
                         onClick={() => setPage(p)}
-                        className={`w-8 h-8 rounded-lg text-sm font-semibold transition-all ${
+                        className={`w-7 h-7 rounded-lg text-xs font-semibold transition-all ${
                           page === p ? "bg-[#006C49] text-white shadow-sm" : "text-[#64748B] hover:bg-[#F1F5F9]"
                         }`}
                       >
@@ -501,15 +531,8 @@ export default function DatabasePasien() {
                       </button>
                     ))}
                   </div>
-                  <button
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                    className="px-4 py-1.5 rounded-lg border border-[#E2E8F0] bg-white text-sm text-[#334155] font-medium hover:bg-[#F8FAFC] hover:border-[#BBCABF] disabled:opacity-35 disabled:cursor-not-allowed transition-all"
-                  >
-                    Selanjutnya
-                  </button>
                 </div>
-              </div>
+              )}
             </motion.div>
 
           </div>

@@ -28,15 +28,16 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
     ? dummyDataBayi
     : dummyDataIbu.filter((d) => d.bulanKe >= 6);
 
-  const yLabels = [0, 30, 60, 90, 120, 150];
-  const maxVal = 150;
+  const isBayiTab = activeTab === "bayi";
+  const yLabels = [0, 40, 80, 120, 160, 200];
+  const maxVal = 200;
   const scaleY = (val: number) => (val / maxVal) * chartH;
   
   const gap = chartW / displayData.length;
   const barWidth = Math.min(40, gap * 0.55);
 
   return (
-    <svg width="100%" viewBox={`0 0 ${w} ${h}`} className="overflow-visible">
+    <svg width="100%" viewBox={`0 0 ${w} ${h}`} className="overflow-visible" preserveAspectRatio="xMinYMin meet">
       {/* Y grid + labels */}
       {yLabels.map((val) => {
         const y = padT + chartH - scaleY(val);
@@ -57,9 +58,9 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
         const isSelected = d.bulanKe === selectedBulan;
 
         const isBayi = activeTab === "bayi";
-        const nNorm = d.status_normal;
-        const nInd  = isBayi ? (d.status_terindikasi ?? 0) : 0;
-        const nStun = isBayi ? d.status_stunting : (d.status_malgizi ?? 0);
+        const nNorm = isBayi ? d.status_normal : d.status_gravida_normal;
+        const nInd  = isBayi ? (d.status_terindikasi ?? 0) : d.status_primi_normal;
+        const nStun = isBayi ? d.status_stunting : d.status_malgizi;
 
         const hNormRaw = scaleY(nNorm);
         const hIndRaw  = scaleY(nInd);
@@ -110,14 +111,14 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
             {/* Terindikasi Bar (Middle) */}
             {indH > 0 && (
               <g>
-                <rect x={cx - barWidth/2} y={indY} width={barWidth} height={indH} fill="#F39C12"
+                <rect x={cx - barWidth/2} y={indY} width={barWidth} height={indH} fill={isBayi ? "#F39C12" : "#EC4899"}
                   rx={3} opacity={1}
                 />
                 <text
                   x={indH > 12 ? cx : cx + barWidth/2 + 6}
                   y={indY + indH / 2 + 3.5}
                   fontSize={10}
-                  fill={indH > 12 ? "white" : "#F39C12"}
+                  fill={indH > 12 ? "white" : (isBayi ? "#F39C12" : "#EC4899")}
                   fontWeight="700"
                   textAnchor={indH > 12 ? "middle" : "start"}
                   opacity={1}
@@ -264,14 +265,8 @@ export default function DashboardDokter() {
   }, []);
 
   useEffect(() => {
-    if (activeTab === "ibu" && selectedBulan < 6) {
-      setSelectedBulan(6);
-    }
-  }, [activeTab, selectedBulan]);
-
-  useEffect(() => {
     setVisibleBulanCount(1);
-    setSelectedBulan(0);
+    setSelectedBulan(activeTab === "ibu" ? 6 : 0);
   }, [activeTab]);
 
   const snapBayi = dummyDataBayi.find((d) => d.bulanKe === selectedBulan)!;
@@ -283,8 +278,9 @@ export default function DashboardDokter() {
     { value: snapBayi.status_stunting,    color: "#E74C3C", label: "Stunting" },
   ];
   const ibuSegments: DonutSegment[] = [
-    { value: snapIbu.status_normal,  color: "#27AE60", label: "Normal" },
-    { value: snapIbu.status_malgizi, color: "#F39C12", label: "Malnutrisi" },
+    { value: snapIbu.status_gravida_normal, color: "#27AE60", label: "Gravida Normal" },
+    { value: snapIbu.status_primi_normal,   color: "#EC4899", label: "Primigravida Normal" },
+    { value: snapIbu.status_malgizi,        color: "#F39C12", label: "Malnutrisi" },
   ];
 
   // KPI deltas vs previous period
@@ -529,22 +525,22 @@ export default function DashboardDokter() {
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}
                 className="grid grid-cols-3 gap-6"
               >
-                {/* Total Pasangan (Ibu & Bayi) */}
+                {/* Total Ibu Primagravida dan Gravida */}
                 <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden justify-between">
                   <div>
-                    <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71] leading-tight">Total Pasangan (Ibu & Bayi)</p>
-                    <span className="text-[40px] font-bold leading-none text-[#0B1C30] block mt-3">{Math.max(snapBayi.total_subjek, snapIbu.total_subjek)}</span>
+                    <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71] leading-tight">Total Ibu Primagravida dan Gravida</p>
+                    <span className="text-[40px] font-bold leading-none text-[#0B1C30] block mt-3">{snapIbu.total_subjek}</span>
                   </div>
                   <div className="border-t border-[#BBCABF]/30 pt-3 flex items-center justify-between text-sm text-[#3C4A42]">
-                    <span>Bayi: {snapBayi.total_subjek}</span>
-                    <span>Ibu: {snapIbu.total_subjek}</span>
+                    <span>Primigravida: 50</span>
+                    <span>Gravida: 150</span>
                   </div>
                 </div>
 
-                {/* Ibu Normal */}
+                {/* Ibu Sehat */}
                 <div className="relative bg-white border border-[#BBCABF]/60 rounded-xl shadow-[0_12px_20px_-4px_rgba(0,0,0,0.06),0_4px_8px_-3px_rgba(0,0,0,0.04)] p-6 flex flex-col gap-3 overflow-hidden">
                   <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-xl bg-[#27AE60]" />
-                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Ibu Normal</p>
+                  <p className="text-[11px] font-semibold tracking-[1.1px] uppercase text-[#6C7A71]">Ibu Sehat</p>
                   <div className="flex items-end gap-3">
                     <span className="text-[40px] font-bold leading-none text-[#0B1C30]">{snapIbu.status_normal}</span>
                   </div>
@@ -582,17 +578,21 @@ export default function DashboardDokter() {
                 <div className="flex items-center gap-4 border border-[#BBCABF]/40 bg-[#F8F9FF] px-3 py-1.5 rounded-full">
                   <div className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-sm bg-[#27AE60]"></span>
-                    <span className="text-[11px] font-semibold text-[#3C4A42]">Normal</span>
+                    <span className="text-[11px] font-semibold text-[#3C4A42]">
+                      {activeTab === "bayi" ? "Normal" : "Gravida Normal"}
+                    </span>
                   </div>
-                  {activeTab === "bayi" && (
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-sm bg-[#F39C12]"></span>
-                      <span className="text-[11px] font-semibold text-[#3C4A42]">Terindikasi</span>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-1.5">
+                    <span className={`w-2.5 h-2.5 rounded-sm ${activeTab === "bayi" ? "bg-[#F39C12]" : "bg-[#EC4899]"}`}></span>
+                    <span className="text-[11px] font-semibold text-[#3C4A42]">
+                      {activeTab === "bayi" ? "Terindikasi" : "Primigravida Normal"}
+                    </span>
+                  </div>
                   <div className="flex items-center gap-1.5">
                     <span className={`w-2.5 h-2.5 rounded-sm ${activeTab === "bayi" ? "bg-[#E74C3C]" : "bg-[#F39C12]"}`}></span>
-                    <span className="text-[11px] font-semibold text-[#3C4A42]">{activeTab === "bayi" ? "Stunting" : "Malgizi"}</span>
+                    <span className="text-[11px] font-semibold text-[#3C4A42]">
+                      {activeTab === "bayi" ? "Stunting" : "Malgizi"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -754,8 +754,9 @@ export default function DashboardDokter() {
                     <DonutChart segments={ibuSegments} total={snapIbu.total_subjek} />
                     <div className="flex flex-col gap-2.5 w-full px-2">
                       {[
-                        { label: "Normal",     value: snapIbu.status_normal,  pct: ((snapIbu.status_normal  / snapIbu.total_subjek) * 100).toFixed(0), color: "#27AE60" },
-                        { label: "Malnutrisi", value: snapIbu.status_malgizi, pct: ((snapIbu.status_malgizi / snapIbu.total_subjek) * 100).toFixed(0), color: "#F39C12" },
+                        { label: "Gravida Normal",      value: snapIbu.status_gravida_normal, pct: ((snapIbu.status_gravida_normal / snapIbu.total_subjek) * 100).toFixed(0), color: "#27AE60" },
+                        { label: "Primigravida Normal", value: snapIbu.status_primi_normal,   pct: ((snapIbu.status_primi_normal   / snapIbu.total_subjek) * 100).toFixed(0), color: "#EC4899" },
+                        { label: "Malnutrisi",          value: snapIbu.status_malgizi,        pct: ((snapIbu.status_malgizi        / snapIbu.total_subjek) * 100).toFixed(0), color: "#F39C12" },
                       ].map((item) => (
                         <div key={item.label} className="flex items-center justify-between">
                           <div className="flex items-center gap-2">

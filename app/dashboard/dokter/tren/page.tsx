@@ -14,10 +14,9 @@ import dummyDataIbu from "@/lib/dummyDataIbu";
 
 type BarItem = { label: string; value: number; color: string };
 
-function BarChart({ bars, title, subtitle }: { bars: BarItem[]; title: string; subtitle: string }) {
-  const maxVal = Math.max(...bars.map((b) => b.value), 1);
-  const chartH = 220;
-  const yLabels = [0, 50, 100, 150];
+function BarChart({ bars, title, subtitle, maxVal = 200 }: { bars: BarItem[]; title: string; subtitle: string; maxVal?: number }) {
+  const chartH = 240;  // effective grid/bar area height
+  const yLabels = [0, 50, 100, 150, 200];
 
   return (
     <div className="flex flex-col gap-4">
@@ -30,48 +29,56 @@ function BarChart({ bars, title, subtitle }: { bars: BarItem[]; title: string; s
           {bars.map((b) => (
             <div key={b.label} className="flex items-center gap-2">
               <span className="w-4 h-4 rounded-full flex-shrink-0" style={{ backgroundColor: b.color }} />
-              <span className="text-base text-[#3C4A42]">{b.label}</span>
+              <span className="text-sm text-[#3C4A42]">{b.label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="relative" style={{ height: chartH + 52 }}>
-        {/* Y-axis labels + grid */}
-        <div className="absolute left-0 top-0 bottom-8 w-12 flex flex-col justify-between items-end pr-3">
+      {/* Outer: chartH for bars/grid + 56px for x-axis labels */}
+      <div className="relative" style={{ height: chartH + 56 }}>
+
+        {/* Y-axis labels — aligned to grid area */}
+        <div className="absolute left-0 w-12 flex flex-col justify-between items-end pr-3"
+             style={{ top: 0, height: chartH }}>
           {[...yLabels].reverse().map((v) => (
-            <span key={v} className="text-base text-[#3C4A42]">{v}</span>
+            <span key={v} className="text-xs font-medium text-[#6C7A71]">{v}</span>
           ))}
         </div>
 
-        {/* Grid lines */}
-        <div className="absolute left-12 right-0 top-0 bottom-8 flex flex-col justify-between pointer-events-none">
+        {/* Grid lines — exactly chartH tall */}
+        <div className="absolute left-12 right-0 flex flex-col justify-between pointer-events-none"
+             style={{ top: 0, height: chartH }}>
           {yLabels.map((v, i) => (
-            <div
-              key={v}
-              className={`w-full border-t ${i === 0 ? "border-[#BBCABF]/60" : "border-[#BBCABF]/20"}`}
-            />
+            <div key={v}
+                 className={`w-full border-t ${i === 0 ? "border-[#BBCABF]/60" : "border-[#BBCABF]/20"}`} />
           ))}
         </div>
 
-        {/* Bars */}
-        <div className="absolute left-12 right-0 top-3 bottom-8 flex items-end justify-around px-20">
+        {/* Bars — same top/height as grid so barH maps directly */}
+        <div className="absolute left-12 right-0 flex items-end justify-around px-12"
+             style={{ top: 0, height: chartH }}>
           {bars.map((b) => {
-            const barH = (b.value / 150) * (chartH - 12);
+            const barH = Math.round((b.value / maxVal) * chartH);
             return (
-              <div key={b.label} className="flex flex-col items-center gap-2" style={{ width: 64 }}>
-                <span className="text-base text-[#0B1C30]">{b.value}</span>
+              <div key={b.label} className="relative flex flex-col items-center justify-end"
+                   style={{ width: 120, height: "100%" }}>
+                {/* Value label — floats above the bar */}
+                <span className="absolute text-sm font-bold text-[#0B1C30]"
+                      style={{ bottom: barH + 6 }}>
+                  {b.value}
+                </span>
                 <motion.div
                   initial={{ scaleY: 0 }}
                   animate={{ scaleY: 1 }}
                   transition={{ duration: 0.6, ease: "easeOut" }}
                   style={{
                     height: barH,
+                    width: 44,
                     backgroundColor: b.color,
                     originY: 1,
-                    width: "100%",
-                    borderRadius: "2px 2px 0 0",
-                    boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
+                    borderRadius: "4px 4px 0 0",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
                   }}
                 />
               </div>
@@ -80,9 +87,12 @@ function BarChart({ bars, title, subtitle }: { bars: BarItem[]; title: string; s
         </div>
 
         {/* X-axis labels */}
-        <div className="absolute left-12 right-0 bottom-0 flex items-center justify-around px-20">
+        <div className="absolute left-12 right-0 flex items-start justify-around px-12"
+             style={{ top: chartH + 8, height: 48 }}>
           {bars.map((b) => (
-            <span key={b.label} className="text-base text-[#0B1C30] text-center" style={{ width: 64 }}>
+            <span key={b.label}
+                  className="text-sm font-semibold text-[#6C7A71] text-center leading-tight"
+                  style={{ width: 120 }}>
               {b.label}
             </span>
           ))}
@@ -122,10 +132,8 @@ export default function DashboardTren() {
   }, []);
 
   useEffect(() => {
-    if (activeTab === "ibu" && selectedBulan < 6) {
-      setSelectedBulan(6);
-    }
-  }, [activeTab, selectedBulan]);
+    // selectedBulan constraint removed
+  }, [activeTab]);
 
   const snapBayi = dummyDataBayi.find((d) => d.bulanKe === selectedBulan)!;
   const snapIbu  = dummyDataIbu.find((d)  => d.bulanKe === selectedBulan)!;
@@ -137,8 +145,9 @@ export default function DashboardTren() {
   ];
 
   const ibuBars: BarItem[] = [
-    { label: "Normal",     value: snapIbu.status_normal,  color: "#27AE60" },
-    { label: "Malnutrisi", value: snapIbu.status_malgizi, color: "#F39C12" },
+    { label: "Gravida Normal",      value: snapIbu.status_gravida_normal, color: "#27AE60" },
+    { label: "Primigravida Normal", value: snapIbu.status_primi_normal,   color: "#EC4899" },
+    { label: "Malnutrisi",          value: snapIbu.status_malgizi,        color: "#F39C12" },
   ];
 
   const snap   = activeTab === "bayi" ? snapBayi : snapIbu;
@@ -346,6 +355,7 @@ export default function DashboardTren() {
                 bars={bars}
                 title={`Distribusi Status Gizi ${activeTab === "bayi" ? "Awal" : "Ibu"}`}
                 subtitle={selectedPeriode}
+                maxVal={200}
               />
             </motion.div>
 
