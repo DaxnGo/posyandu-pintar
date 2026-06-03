@@ -102,6 +102,113 @@ function BarChart({ bars, title, subtitle, maxVal = 200 }: { bars: BarItem[]; ti
   );
 }
 
+// ── Grouped Bar Chart (for Ibu data) ────────────────────────────────────────
+
+type GroupedBarGroup = {
+  groupLabel: string;
+  bars: { label: string; value: number; color: string }[];
+};
+
+function GroupedBarChart({
+  groups, title, subtitle, maxVal = 200,
+}: {
+  groups: GroupedBarGroup[]; title: string; subtitle: string; maxVal?: number;
+}) {
+  const chartH = 240;
+  const yLabels = [0, 50, 100, 150, 200];
+  const BAR_W  = 36;
+  const BAR_GAP = 4;   // gap between bars within a group
+  const GRP_GAP = 32;  // gap between groups
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-base font-semibold text-[#0B1C30]">{title}</h3>
+          <p className="text-sm text-[#3C4A42] mt-0.5">{subtitle}</p>
+        </div>
+        {/* Legend — collect all unique label+color pairs */}
+        <div className="flex flex-wrap justify-end gap-x-5 gap-y-1.5">
+          {Array.from(
+            new Map(
+              groups.flatMap((g) => g.bars).map((b) => [b.label, b])
+            ).values()
+          ).map((b) => (
+            <div key={b.label} className="flex items-center gap-1.5">
+              <span className="w-3.5 h-3.5 rounded-full flex-shrink-0" style={{ backgroundColor: b.color }} />
+              <span className="text-xs font-medium text-[#3C4A42]">{b.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Chart area */}
+      <div className="relative" style={{ height: chartH + 56 }}>
+        {/* Y-axis */}
+        <div className="absolute left-0 w-12 flex flex-col justify-between items-end pr-3"
+             style={{ top: 0, height: chartH }}>
+          {[...yLabels].reverse().map((v) => (
+            <span key={v} className="text-xs font-medium text-[#6C7A71]">{v}</span>
+          ))}
+        </div>
+
+        {/* Grid lines */}
+        <div className="absolute left-12 right-0 flex flex-col justify-between pointer-events-none"
+             style={{ top: 0, height: chartH }}>
+          {yLabels.map((v, i) => (
+            <div key={v} className={`w-full border-t ${i === 0 ? "border-[#BBCABF]/60" : "border-[#BBCABF]/20"}`} />
+          ))}
+        </div>
+
+        {/* Bars + X labels */}
+        <div className="absolute left-12 right-0 flex items-end justify-around"
+             style={{ top: 0, height: chartH + 48, paddingLeft: GRP_GAP, paddingRight: GRP_GAP }}>
+          {groups.map((grp) => {
+            const grpW = grp.bars.length * BAR_W + (grp.bars.length - 1) * BAR_GAP;
+            return (
+              <div key={grp.groupLabel} className="flex flex-col items-center" style={{ gap: 0 }}>
+                {/* Bars row */}
+                <div className="flex items-end" style={{ gap: BAR_GAP, height: chartH }}>
+                  {grp.bars.map((b) => {
+                    const barH = Math.max(2, Math.round((b.value / maxVal) * chartH));
+                    return (
+                      <div key={b.label} className="relative flex flex-col items-center justify-end"
+                           style={{ width: BAR_W, height: "100%" }}>
+                        {/* Value label above bar */}
+                        <span className="absolute text-xs font-bold text-[#0B1C30]"
+                              style={{ bottom: barH + 5, whiteSpace: "nowrap" }}>
+                          {b.value}
+                        </span>
+                        <motion.div
+                          initial={{ scaleY: 0 }} animate={{ scaleY: 1 }}
+                          transition={{ duration: 0.55, ease: "easeOut" }}
+                          style={{
+                            height: barH, width: BAR_W,
+                            backgroundColor: b.color,
+                            originY: 1,
+                            borderRadius: "4px 4px 0 0",
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.10)",
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                {/* Group label */}
+                <span className="text-xs font-semibold text-[#6C7A71] text-center leading-tight mt-2"
+                      style={{ width: Math.max(grpW, 80) }}>
+                  {grp.groupLabel}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Nav Item ──────────────────────────────────────────────────────────────────
 
 function NavItem({ icon: Icon, label, active = false, href = "#" }: {
@@ -148,6 +255,29 @@ export default function DashboardTren() {
     { label: "Gravida Normal",      value: snapIbu.status_gravida_normal, color: "#27AE60" },
     { label: "Primigravida Normal", value: snapIbu.status_primi_normal,   color: "#EC4899" },
     { label: "Malnutrisi",          value: snapIbu.status_malgizi,        color: "#F39C12" },
+  ];
+
+  const ibuGroups: GroupedBarGroup[] = [
+    {
+      groupLabel: "Gravida Normal",
+      bars: [
+        { label: "Gravida Normal", value: snapIbu.status_gravida_normal,  color: "#27AE60" },
+        { label: "Malgizi",        value: snapIbu.status_gravida_malgizi, color: "#F39C12" },
+      ],
+    },
+    {
+      groupLabel: "Primigravida Normal",
+      bars: [
+        { label: "Primigravida Normal", value: snapIbu.status_primi_normal,  color: "#EC4899" },
+        { label: "Malgizi",             value: snapIbu.status_primi_malgizi, color: "#F39C12" },
+      ],
+    },
+    {
+      groupLabel: "Total Malnutrisi",
+      bars: [
+        { label: "Malgizi", value: snapIbu.status_malgizi, color: "#F39C12" },
+      ],
+    },
   ];
 
   const snap   = activeTab === "bayi" ? snapBayi : snapIbu;
@@ -351,12 +481,21 @@ export default function DashboardTren() {
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}
               className="bg-white border border-[#BBCABF]/30 rounded-xl shadow-[0_4px_24px_rgba(0,25,69,0.04)] p-8"
             >
-              <BarChart
-                bars={bars}
-                title={`Distribusi Status Gizi ${activeTab === "bayi" ? "Awal" : "Ibu"}`}
-                subtitle={selectedPeriode}
-                maxVal={200}
-              />
+              {activeTab === "bayi" ? (
+                <BarChart
+                  bars={bars}
+                  title="Distribusi Status Gizi Awal"
+                  subtitle={selectedPeriode}
+                  maxVal={200}
+                />
+              ) : (
+                <GroupedBarChart
+                  groups={ibuGroups}
+                  title="Distribusi Status Gizi Ibu"
+                  subtitle={selectedPeriode}
+                  maxVal={200}
+                />
+              )}
             </motion.div>
 
           </div>

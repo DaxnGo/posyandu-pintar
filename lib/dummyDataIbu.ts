@@ -10,6 +10,8 @@ interface IbuPeriodData {
   status_gravida_normal: number;
   status_primi_normal: number;
   status_malgizi: number;
+  status_gravida_malgizi: number;
+  status_primi_malgizi: number;
   capaian_persen: number;
 }
 
@@ -33,6 +35,8 @@ const dummyDataIbu: IbuPeriodData[] = metadata.map((item) => {
   const status_gravida_normal = dummyDataPasien.filter((p) => !p.id.startsWith("PS-2") && getStatusIbuAt(p, item.bulanKe) === "Normal").length;
   const status_primi_normal = dummyDataPasien.filter((p) => p.id.startsWith("PS-2") && getStatusIbuAt(p, item.bulanKe) === "Normal").length;
   const status_malgizi = dummyDataPasien.filter((p) => getStatusIbuAt(p, item.bulanKe) === "Malgizi").length;
+  const status_gravida_malgizi = dummyDataPasien.filter((p) => !p.id.startsWith("PS-2") && getStatusIbuAt(p, item.bulanKe) === "Malgizi").length;
+  const status_primi_malgizi = dummyDataPasien.filter((p) => p.id.startsWith("PS-2") && getStatusIbuAt(p, item.bulanKe) === "Malgizi").length;
   const capaian_persen = parseFloat(((status_normal / total_subjek) * 100).toFixed(1));
 
   return {
@@ -45,6 +49,8 @@ const dummyDataIbu: IbuPeriodData[] = metadata.map((item) => {
     status_gravida_normal,
     status_primi_normal,
     status_malgizi,
+    status_gravida_malgizi,
+    status_primi_malgizi,
     capaian_persen,
   };
 });

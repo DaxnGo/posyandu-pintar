@@ -42,12 +42,12 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
   const barWidth   = Math.min(42, gap * 0.55);
   const half       = barWidth * 0.5; // half-width for each bar of a side-by-side pair
 
-  // Baseline malgizi split: 150 Gravida, 50 Primigravida (proportional)
+  // Baseline malgizi split: 32 Gravida, 12 Primigravida
   const baselineIbu    = isBayiTab ? null : dummyDataIbu.find((d) => d.bulanKe === 0);
   const TOTAL_GRAVIDA  = 150;
   const TOTAL_PRIMI    = 50;
-  const malgGravida    = baselineIbu ? Math.round(baselineIbu.status_malgizi * (TOTAL_GRAVIDA / 200)) : 0;
-  const malgPrimi      = baselineIbu ? baselineIbu.status_malgizi - malgGravida : 0;
+  const malgGravida    = baselineIbu ? 32 : 0;
+  const malgPrimi      = baselineIbu ? 12 : 0;
 
   // X-position helpers
   const introX   = (col: number)  => padL + gap * col + gap / 2;
@@ -70,10 +70,10 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
           <g>
             <rect x={cx - half - 2} y={lY} width={half - 1} height={lH} fill={leftClr} rx={3} />
             <text
-              x={lH > 16 ? cx - half - 1 : cx - half - 10}
-              y={lH > 16 ? lY + lH / 2 + 4 : lY - 6}
-              fontSize={11} fill={lH > 16 ? "white" : leftClr}
-              fontWeight="700" textAnchor={lH > 16 ? "middle" : "end"}
+              x={cx - half/2 - 2.5}
+              y={lY - 6}
+              fontSize={10} fill={leftClr}
+              fontWeight="700" textAnchor="middle"
             >{leftVal}</text>
           </g>
         )}
@@ -81,10 +81,10 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
           <g>
             <rect x={cx + 2} y={rY} width={half - 1} height={rH} fill={rightClr} rx={3} />
             <text
-              x={rH > 16 ? cx + half + 1 : cx + half + 10}
-              y={rH > 16 ? rY + rH / 2 + 4 : rY - 6}
-              fontSize={11} fill={rH > 16 ? "white" : rightClr}
-              fontWeight="700" textAnchor={rH > 16 ? "middle" : "start"}
+              x={cx + half/2 + 1.5}
+              y={rY - 6}
+              fontSize={10} fill={rightClr}
+              fontWeight="700" textAnchor="middle"
             >{rightVal}</text>
           </g>
         )}
@@ -116,7 +116,7 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
           <text x={introX(0)} y={h - 12} fontSize={10} fill="#64748B" fontWeight="600" textAnchor="middle">Populasi</text>
 
           {/* Col 1 — Malgizi Awal: baseline malgizi split by group */}
-          {renderPair(introX(1), malgGravida, malgPrimi, "#F39C12", "#F472B6")}
+          {renderPair(introX(1), malgGravida, malgPrimi, "#F39C12", "#EC4899")}
           <text x={introX(1)} y={h - 12} fontSize={10} fill="#64748B" fontWeight="600" textAnchor="middle">Malgizi Awal</text>
 
           {/* Vertical divider */}
