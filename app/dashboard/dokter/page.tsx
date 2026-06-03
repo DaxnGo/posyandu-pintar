@@ -64,27 +64,28 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
     const rH = scaleY(rightVal);
     const lY = padT + chartH - lH;
     const rY = padT + chartH - rH;
+    const pairBarW = half * 1.25;
     return (
       <g>
         {lH > 0 && (
           <g>
-            <rect x={cx - half - 2} y={lY} width={half - 1} height={lH} fill={leftClr} rx={3} />
+            <rect x={cx - pairBarW - 2} y={lY} width={pairBarW} height={lH} fill={leftClr} rx={4} />
             <text
-              x={cx - half/2 - 2.5}
+              x={cx - pairBarW/2 - 2}
               y={lY - 6}
-              fontSize={10} fill={leftClr}
-              fontWeight="700" textAnchor="middle"
+              fontSize={12} fill={leftClr}
+              fontWeight="bold" textAnchor="middle"
             >{leftVal}</text>
           </g>
         )}
         {rH > 0 && (
           <g>
-            <rect x={cx + 2} y={rY} width={half - 1} height={rH} fill={rightClr} rx={3} />
+            <rect x={cx + 2} y={rY} width={pairBarW} height={rH} fill={rightClr} rx={4} />
             <text
-              x={cx + half/2 + 1.5}
+              x={cx + pairBarW/2 + 2}
               y={rY - 6}
-              fontSize={10} fill={rightClr}
-              fontWeight="700" textAnchor="middle"
+              fontSize={12} fill={rightClr}
+              fontWeight="bold" textAnchor="middle"
             >{rightVal}</text>
           </g>
         )}
