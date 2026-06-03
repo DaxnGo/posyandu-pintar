@@ -164,7 +164,7 @@ export default function DashboardTren() {
       {/* ── Sidebar ────────────────────────────────────────────────────────── */}
       <aside className="w-64 flex-shrink-0 bg-white border-r border-[#BBCABF]/60 shadow-sm flex flex-col py-8">
         <div className="px-8 mb-10">
-          <h1 className="text-[#006C49] font-bold text-2xl tracking-widest leading-tight">POSYANDU<br />PINTAR</h1>
+          <h1 className="text-[#006C49] font-bold text-2xl tracking-widest leading-tight">POSYANDU<br />UTAMA</h1>
           <p className="text-[#6C7A71] text-xs font-medium tracking-wide mt-1">Clinical Data System</p>
         </div>
         <nav className="flex-1 px-4 flex flex-col gap-1">
@@ -365,7 +365,7 @@ export default function DashboardTren() {
         {/* Footer */}
         <footer className="bg-white border-t border-[#E2E8F0] px-8 py-4 flex items-center justify-between flex-shrink-0">
           <span className="text-xs font-bold text-[#1E293B] tracking-widest uppercase">
-            © 2026 POSYANDU PINTAR • SECURE CLINICAL ENVIRONMENT
+            © 2026 Posyandu Utama, Puskesmas Airmadidi Bawah, Kelurahan Airmadidi Bawah, Kabupaten Minahasa Utara, Sulawesi Utara
           </span>
           <div className="flex items-center gap-6">
             {["Data Privacy", "Protocol Manual", "System Status"].map((l) => (

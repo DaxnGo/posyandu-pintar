@@ -6,7 +6,7 @@ import {
   Bell, HelpCircle, UserCircle, LayoutGrid,
   TrendingUp, Users, LogOut, ChevronDown,
   RefreshCw, Baby, User,
-  CheckCircle2,
+  CheckCircle2, Building2,
 } from "lucide-react";
 import dummyDataPasien, {
   getStatusAt, getStatusIbuAt,
@@ -72,6 +72,7 @@ export default function DatabasePasien() {
   const [pendingBulan, setPendingBulan] = useState(0);
   const [activeBulan,  setActiveBulan]  = useState(0);   // committed period
   const [filter,       setFilter]       = useState("semua");
+  const [kategoriFilter, setKategoriFilter] = useState<"semua" | "gravida" | "primigravida">("semua");
   const [page,         setPage]         = useState(1);
   const [refreshing,   setRefreshing]   = useState(false);
   const [justRefreshed, setJustRefreshed] = useState(false);
@@ -149,11 +150,16 @@ export default function DatabasePasien() {
   function handleTabChange(tab: "bayi" | "ibu") {
     setActiveTab(tab);
     setFilter("semua");
+    setKategoriFilter("semua");
     setPage(1);
   }
 
   function handleFilter(key: string) {
     setFilter(key);
+    // Reset kategori filter jika tidak memilih "normal" atau "malgizi"
+    if (key !== "normal" && key !== "malgizi") {
+      setKategoriFilter("semua");
+    }
     setPage(1);
   }
 
@@ -162,6 +168,14 @@ export default function DatabasePasien() {
     const fn = (p: typeof withStatus[0]) => {
       const st = activeTab === "bayi" ? p.status : p.statusIbu;
       const isGravida = !p.id.startsWith("PS-2");
+
+      // Kategori filter (hanya untuk tab ibu)
+      if (activeTab === "ibu") {
+        if (kategoriFilter === "gravida" && isGravida === false) return false;
+        if (kategoriFilter === "primigravida" && isGravida === true) return false;
+      }
+
+      // Status filter
       if (filter === "semua")        return true;
       if (filter === "normal")       return st === "Normal";
       if (filter === "stunting")     return st === "Stunting";
@@ -172,7 +186,7 @@ export default function DatabasePasien() {
       return true;
     };
     return withStatus.filter(fn);
-  }, [withStatus, filter, activeTab]);
+  }, [withStatus, filter, kategoriFilter, activeTab]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageRows   = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -191,13 +205,13 @@ export default function DatabasePasien() {
       {/* ── Sidebar ────────────────────────────────────────────────────────── */}
       <aside className="w-64 flex-shrink-0 bg-white border-r border-[#BBCABF]/60 shadow-sm flex flex-col py-8">
         <div className="px-8 mb-10">
-          <h1 className="text-[#006C49] font-bold text-2xl tracking-widest leading-tight">POSYANDU<br />PINTAR</h1>
+          <h1 className="text-[#006C49] font-bold text-2xl tracking-widest leading-tight">POSYANDU<br />UTAMA</h1>
           <p className="text-[#6C7A71] text-xs font-medium tracking-wide mt-1">Clinical Data System</p>
         </div>
         <nav className="flex-1 px-4 flex flex-col gap-1">
           <NavItem icon={LayoutGrid} label="Overview"        href="/dashboard/dokter" />
           <NavItem icon={TrendingUp} label="Tren & Semester" href="/dashboard/dokter/tren" />
-          <NavItem icon={Users}      label="Database Pasien" active href="/dashboard/dokter/database" />
+          <NavItem icon={Building2}  label="Database Pasien" active href="/dashboard/dokter/database" />
         </nav>
         <div className="px-6 mt-4">
           <div className="bg-[#F8F9FF] border border-[#BBCABF]/40 rounded-xl p-4 flex items-center gap-3 shadow-sm">
@@ -323,7 +337,7 @@ export default function DatabasePasien() {
               {/* Total Database */}
               <div className="bg-white border border-[#BBCABF] rounded-xl p-6 flex flex-col gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                 <div className="w-10 h-10 bg-[#F8F9FF] border border-[#BBCABF] rounded-lg flex items-center justify-center">
-                  <Users className="w-[18px] h-[18px] text-[#006C49]" />
+                  <Building2 className="w-[18px] h-[18px] text-[#006C49]" />
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <p className="text-[11px] font-bold tracking-[1.1px] uppercase text-[#6C7A71]">Total Database</p>
@@ -407,33 +421,77 @@ export default function DatabasePasien() {
               className="bg-white border border-[#BBCABF] rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
             >
               {/* Filter Pills */}
-              <div className="px-6 py-4 border-b border-[#E2E8F0] flex items-center gap-2.5 flex-wrap">
-                <AnimatePresence mode="popLayout">
-                  {pills.map((pill) => {
-                    const isActive = filter === pill.key;
-                    return (
-                      <motion.button
-                        key={`${activeTab}-${pill.key}`}
-                        layout
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleFilter(pill.key)}
-                        className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                          isActive
-                            ? "bg-[#006C49] text-white shadow-sm"
-                            : "bg-white border border-[#BBCABF] text-[#64748B] hover:border-[#006C49]/60 hover:text-[#0B1C30]"
-                        }`}
-                      >
-                        {pill.label}
-                        <span className={`ml-1.5 ${isActive ? "text-white/75" : "text-[#94A3B8]"}`}>
-                          ({pill.count})
-                        </span>
-                      </motion.button>
-                    );
-                  })}
-                </AnimatePresence>
+              <div className="px-6 py-4 border-b border-[#E2E8F0] flex flex-col gap-4">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <AnimatePresence mode="popLayout">
+                    {pills.map((pill) => {
+                      const isActive = filter === pill.key;
+                      return (
+                        <motion.button
+                          key={`${activeTab}-${pill.key}`}
+                          layout
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => handleFilter(pill.key)}
+                          className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                            isActive
+                              ? "bg-[#006C49] text-white shadow-sm"
+                              : "bg-white border border-[#BBCABF] text-[#64748B] hover:border-[#006C49]/60 hover:text-[#0B1C30]"
+                          }`}
+                        >
+                          {pill.label}
+                          <span className={`ml-1.5 ${isActive ? "text-white/75" : "text-[#94A3B8]"}`}>
+                            ({pill.count})
+                          </span>
+                        </motion.button>
+                      );
+                    })}
+                  </AnimatePresence>
+                </div>
+
+                {/* Kategori Filter (Only for Normal Ibu or Malgizi Ibu) */}
+                {activeTab === "ibu" && (filter === "normal" || filter === "malgizi") && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center gap-3 pt-2 border-t border-[#E2E8F0]"
+                  >
+                    <span className="text-xs font-semibold text-[#6C7A71] uppercase tracking-wide">Kategori:</span>
+                    <div className="flex items-center gap-2">
+                      {[
+                        { key: "semua", label: "Semua Ibu" },
+                        { key: "gravida", label: "Gravida" },
+                        { key: "primigravida", label: "Primigravida" },
+                      ].map((cat) => {
+                        const isActive = kategoriFilter === cat.key;
+                        return (
+                          <motion.button
+                            key={cat.key}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => {
+                              setKategoriFilter(cat.key as "semua" | "gravida" | "primigravida");
+                              setPage(1);
+                            }}
+                            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                              isActive
+                                ? cat.key === "gravida"
+                                  ? "bg-[#F0FDF4] text-[#166534] border border-[#86EFAC]"
+                                  : cat.key === "primigravida"
+                                  ? "bg-[#FFF0F9] text-[#BE185D] border border-[#FBCFE8]"
+                                  : "bg-[#F1F5F9] text-[#0B1C30] border border-[#CBD5E1]"
+                                : "bg-white border border-[#BBCABF] text-[#64748B] hover:border-[#006C49]/60"
+                            }`}
+                          >
+                            {cat.label}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
               </div>
 
               {/* Table */}
@@ -541,7 +599,7 @@ export default function DatabasePasien() {
         {/* Footer */}
         <footer className="bg-white border-t border-[#E2E8F0] px-8 py-4 flex items-center justify-between flex-shrink-0">
           <span className="text-xs font-bold text-[#1E293B] tracking-widest uppercase">
-            © 2026 POSYANDU PINTAR • SECURE CLINICAL ENVIRONMENT
+            © 2026 Posyandu Utama, Puskesmas Airmadidi Bawah, Kelurahan Airmadidi Bawah, Kabupaten Minahasa Utara, Sulawesi Utara
           </span>
           <div className="flex items-center gap-6">
             {["Data Privacy", "Protocol Manual", "System Status"].map((l) => (

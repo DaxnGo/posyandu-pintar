@@ -9,7 +9,7 @@ import {
   ArrowRight,
   ChevronRight,
   Circle,
-  ShieldCheck,
+  Building2,
 } from "lucide-react";
 
 // ─── Animation Variants ────────────────────────────────────────────────────────
@@ -62,10 +62,10 @@ function Navbar() {
         {/* Logo */}
         <a href="#" className="flex items-center gap-2 group">
           <div className="w-8 h-8 rounded-lg bg-[#006C49] flex items-center justify-center">
-            <ShieldCheck className="w-4 h-4 text-white" />
+            <Building2 className="w-4 h-4 text-white" />
           </div>
           <span className="text-[#006C49] font-bold text-lg tracking-tight">
-            POSYANDU <span className="text-[#0B1C30]">PINTAR</span>
+            POSYANDU <span className="text-[#0B1C30]">UTAMA</span>
           </span>
         </a>
 
@@ -555,18 +555,17 @@ function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-[#006C49] flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4 text-white" />
+              <Building2 className="w-4 h-4 text-white" />
             </div>
             <div>
-              <p className="font-bold text-sm">POSYANDU PINTAR</p>
+              <p className="font-bold text-sm">POSYANDU UTAMA</p>
               <p className="text-xs text-slate-400">
                 Sistem Pemantauan 1000 HPK
               </p>
             </div>
           </div>
           <p className="text-xs text-slate-500 text-center">
-            © 2023–2026 Posyandu Pintar. Program Kesehatan Nasional — Bebas
-            Stunting.
+            © 2023–2026 Posyandu Utama, Puskesmas Airmadidi Bawah, Kelurahan Airmadidi Bawah, Kabupaten Minahasa Utara, Sulawesi Utara. Program Kesehatan Nasional Bebas Stunting.
           </p>
           <div className="flex gap-6">
             {["Home", "Metodologi", "Timeline"].map((l) => (

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  ShieldCheck,
+  Building2,
   User,
   Lock,
   Eye,
@@ -115,19 +115,21 @@ export default function LoginPage() {
         <div className="w-full max-w-md flex flex-col gap-4">
 
           {/* Brand */}
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-[#006C49] flex items-center justify-center shadow-md">
-                <ShieldCheck className="w-4 h-4 text-white" />
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[#006C49] flex items-center justify-center shadow-md flex-shrink-0">
+                <Building2 className="w-5 h-5 text-white" />
               </div>
-              <span className="text-[#006C49] font-bold text-base tracking-tight">
-                POSYANDU <span className="text-[#0B1C30]">PINTAR</span>
+              <span className="text-[#006C49] font-bold text-sm tracking-tight">
+                POSYANDU Utama, Puskesmas Airmadidi Bawah, Kelurahan Airmadidi Bawah, Kabupaten Minahasa Utara, Sulawesi Utara
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-[#0B1C30]">Selamat Datang</h1>
-            <p className="text-[#3C4A42] text-xs leading-snug">
-              Monitoring Siklus 1000 Hari Pertama Kehidupan (HPK)
-            </p>
+            <div>
+              <h1 className="text-2xl font-bold text-[#0B1C30]">Selamat Datang</h1>
+              <p className="text-[#3C4A42] text-xs leading-snug">
+                Monitoring Siklus 1000 Hari Pertama Kehidupan (HPK)
+              </p>
+            </div>
           </div>
 
           {/* Role Selector */}
@@ -244,7 +246,7 @@ export default function LoginPage() {
 
           {/* Copyright */}
           <p className="text-center text-xs text-[#6C7A71]">
-            © 2026 POSYANDU PINTAR — Sistem Tertutup
+            © 2026 Posyandu Utama, Puskesmas Airmadidi Bawah, Kelurahan Airmadidi Bawah, Kabupaten Minahasa Utara, Sulawesi Utara — Sistem Tertutup
           </p>
         </div>
       </motion.div>

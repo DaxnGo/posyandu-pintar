@@ -15,12 +15,12 @@ import dummyDataIbu from "@/lib/dummyDataIbu";
 // ── Stacked Bar Chart ────────────────────────────────────────────────────────────
 
 function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan: number; activeTab: "bayi" | "ibu"; visibleCount: number }) {
-  const w = 910;
-  const h = 280;
-  const padL = 40;
-  const padR = 20;
-  const padT = 20;
-  const padB = 30;
+  const w = 1000;
+  const h = 340;
+  const padL = 50;
+  const padR = 30;
+  const padT = 40;
+  const padB = 50;
   const chartW = w - padL - padR;
   const chartH = h - padT - padB;
 
@@ -32,19 +32,75 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
   const yLabels = [0, 40, 80, 120, 160, 200];
   const maxVal = 200;
   const scaleY = (val: number) => (val / maxVal) * chartH;
-  
-  const gap = chartW / displayData.length;
-  const barWidth = Math.min(40, gap * 0.55);
+
+  // ── Ibu: two intro columns before monthly data ──────────────────────────
+  const INTRO_COLS = 2;    // "Populasi" + "Malgizi Awal"
+  const DIVIDER_W  = 20;   // px gap reserved for the visual divider
+
+  const totalSlots = isBayiTab ? displayData.length : INTRO_COLS + displayData.length;
+  const gap        = (chartW - (isBayiTab ? 0 : DIVIDER_W)) / totalSlots;
+  const barWidth   = Math.min(42, gap * 0.55);
+  const half       = barWidth * 0.5; // half-width for each bar of a side-by-side pair
+
+  // Baseline malgizi split: 150 Gravida, 50 Primigravida (proportional)
+  const baselineIbu    = isBayiTab ? null : dummyDataIbu.find((d) => d.bulanKe === 0);
+  const TOTAL_GRAVIDA  = 150;
+  const TOTAL_PRIMI    = 50;
+  const malgGravida    = baselineIbu ? Math.round(baselineIbu.status_malgizi * (TOTAL_GRAVIDA / 200)) : 0;
+  const malgPrimi      = baselineIbu ? baselineIbu.status_malgizi - malgGravida : 0;
+
+  // X-position helpers
+  const introX   = (col: number)  => padL + gap * col + gap / 2;
+  const monthlyX = (mIdx: number) =>
+    padL + (isBayiTab ? 0 : INTRO_COLS * gap + DIVIDER_W) + gap * mIdx + gap / 2;
+
+  // Helper: render two side-by-side bars (left = Gravida color, right = Primigravida color)
+  const renderPair = (
+    cx: number,
+    leftVal: number,  rightVal: number,
+    leftClr: string,  rightClr: string,
+  ) => {
+    const lH = scaleY(leftVal);
+    const rH = scaleY(rightVal);
+    const lY = padT + chartH - lH;
+    const rY = padT + chartH - rH;
+    return (
+      <g>
+        {lH > 0 && (
+          <g>
+            <rect x={cx - half - 2} y={lY} width={half - 1} height={lH} fill={leftClr} rx={3} />
+            <text
+              x={lH > 16 ? cx - half - 1 : cx - half - 10}
+              y={lH > 16 ? lY + lH / 2 + 4 : lY - 6}
+              fontSize={11} fill={lH > 16 ? "white" : leftClr}
+              fontWeight="700" textAnchor={lH > 16 ? "middle" : "end"}
+            >{leftVal}</text>
+          </g>
+        )}
+        {rH > 0 && (
+          <g>
+            <rect x={cx + 2} y={rY} width={half - 1} height={rH} fill={rightClr} rx={3} />
+            <text
+              x={rH > 16 ? cx + half + 1 : cx + half + 10}
+              y={rH > 16 ? rY + rH / 2 + 4 : rY - 6}
+              fontSize={11} fill={rH > 16 ? "white" : rightClr}
+              fontWeight="700" textAnchor={rH > 16 ? "middle" : "start"}
+            >{rightVal}</text>
+          </g>
+        )}
+      </g>
+    );
+  };
 
   return (
-    <svg width="100%" viewBox={`0 0 ${w} ${h}`} className="overflow-visible" preserveAspectRatio="xMinYMin meet">
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="w-full" style={{ height: `${h}px` }}>
       {/* Y grid + labels */}
       {yLabels.map((val) => {
         const y = padT + chartH - scaleY(val);
         return (
           <g key={val}>
             <line x1={padL} y1={y} x2={w - padR} y2={y} stroke="#E2E8F0" strokeWidth={1} strokeDasharray="4 4" />
-            <text x={padL - 12} y={y + 4} fontSize={11} fill="#94A3B8" textAnchor="end">{val}</text>
+            <text x={padL - 14} y={y + 5} fontSize={11} fill="#94A3B8" textAnchor="end" fontWeight="500">{val}</text>
           </g>
         );
       })}
@@ -52,9 +108,32 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
       {/* X axis base line */}
       <line x1={padL} y1={padT + chartH} x2={w - padR} y2={padT + chartH} stroke="#CBD5E1" strokeWidth={2} />
 
+      {/* ── Ibu intro columns ──────────────────────────────────────────── */}
+      {!isBayiTab && (
+        <g>
+          {/* Col 0 — Populasi: total Gravida (150) & Primigravida (50) */}
+          {renderPair(introX(0), TOTAL_GRAVIDA, TOTAL_PRIMI, "#27AE60", "#EC4899")}
+          <text x={introX(0)} y={h - 12} fontSize={10} fill="#64748B" fontWeight="600" textAnchor="middle">Populasi</text>
+
+          {/* Col 1 — Malgizi Awal: baseline malgizi split by group */}
+          {renderPair(introX(1), malgGravida, malgPrimi, "#F39C12", "#F472B6")}
+          <text x={introX(1)} y={h - 12} fontSize={10} fill="#64748B" fontWeight="600" textAnchor="middle">Malgizi Awal</text>
+
+          {/* Vertical divider */}
+          <line
+            x1={padL + INTRO_COLS * gap + DIVIDER_W / 2}
+            y1={padT - 10}
+            x2={padL + INTRO_COLS * gap + DIVIDER_W / 2}
+            y2={padT + chartH}
+            stroke="#CBD5E1" strokeWidth={1.5} strokeDasharray="5 3"
+          />
+        </g>
+      )}
+
+      {/* ── Monthly stacked bars ────────────────────────────────────────── */}
       {displayData.map((d: any, idx) => {
         if (idx >= visibleCount) return null;
-        const cx = padL + gap * idx + gap / 2;
+        const cx = monthlyX(idx);
         const isSelected = d.bulanKe === selectedBulan;
 
         const isBayi = activeTab === "bayi";
@@ -88,73 +167,54 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
             {isSelected && (
               <rect x={cx - gap/2} y={padT} width={gap} height={chartH} fill="#F8FAFC" rx={6} />
             )}
-            
-            {/* Normal Bar (Bottom) */}
+
+            {/* Normal / Gravida-Normal Bar (Bottom) */}
             {normH > 0 && (
               <g>
-                <rect x={cx - barWidth/2} y={normY} width={barWidth} height={normH} fill="#27AE60"
-                  rx={3} opacity={1}
-                />
+                <rect x={cx - barWidth/2} y={normY} width={barWidth} height={normH} fill="#27AE60" rx={3} opacity={1} />
                 <text
-                  x={normH > 12 ? cx : cx - barWidth/2 - 6}
-                  y={normY + normH / 2 + 3.5}
-                  fontSize={10}
-                  fill={normH > 12 ? "white" : "#27AE60"}
-                  fontWeight="700"
-                  textAnchor={normH > 12 ? "middle" : "end"}
-                  opacity={1}
-                >
-                  {nNorm}
-                </text>
+                  x={normH > 18 ? cx : cx - barWidth/2 - 8}
+                  y={normH > 18 ? normY + normH / 2 + 4 : normY - 5}
+                  fontSize={11} fill={normH > 18 ? "white" : "#27AE60"}
+                  fontWeight="700" textAnchor={normH > 18 ? "middle" : "end"} opacity={1}
+                >{nNorm}</text>
               </g>
             )}
-            {/* Terindikasi Bar (Middle) */}
+
+            {/* Terindikasi / Primigravida-Normal Bar (Middle) */}
             {indH > 0 && (
               <g>
-                <rect x={cx - barWidth/2} y={indY} width={barWidth} height={indH} fill={isBayi ? "#F39C12" : "#EC4899"}
-                  rx={3} opacity={1}
-                />
+                <rect x={cx - barWidth/2} y={indY} width={barWidth} height={indH} fill={isBayi ? "#F39C12" : "#EC4899"} rx={3} opacity={1} />
                 <text
-                  x={indH > 12 ? cx : cx + barWidth/2 + 6}
-                  y={indY + indH / 2 + 3.5}
-                  fontSize={10}
-                  fill={indH > 12 ? "white" : (isBayi ? "#F39C12" : "#EC4899")}
-                  fontWeight="700"
-                  textAnchor={indH > 12 ? "middle" : "start"}
-                  opacity={1}
-                >
-                  {nInd}
-                </text>
+                  x={indH > 18 ? cx : cx + barWidth/2 + 8}
+                  y={indH > 18 ? indY + indH / 2 + 4 : indY - 5}
+                  fontSize={11} fill={indH > 18 ? "white" : (isBayi ? "#F39C12" : "#EC4899")}
+                  fontWeight="700" textAnchor={indH > 18 ? "middle" : "start"} opacity={1}
+                >{nInd}</text>
               </g>
             )}
+
             {/* Stunting / Malgizi Bar (Top) */}
             {stunH > 0 && (
               <g>
-                <rect x={cx - barWidth/2} y={stunY} width={barWidth} height={stunH} fill={isBayi ? "#E74C3C" : "#F39C12"}
-                  rx={3} opacity={1}
-                />
+                <rect x={cx - barWidth/2} y={stunY} width={barWidth} height={stunH} fill={isBayi ? "#E74C3C" : "#F39C12"} rx={3} opacity={1} />
                 <text
                   x={cx}
-                  y={stunH > 12 ? stunY + stunH / 2 + 3.5 : stunY - 4}
-                  fontSize={10}
-                  fill={stunH > 12 ? "white" : (isBayi ? "#E74C3C" : "#F39C12")}
-                  fontWeight="700"
-                  textAnchor="middle"
-                  opacity={1}
-                >
-                  {nStun}
-                </text>
+                  y={stunH > 18 ? stunY + stunH / 2 + 4 : stunY - 7}
+                  fontSize={11} fill={stunH > 18 ? "white" : (isBayi ? "#E74C3C" : "#F39C12")}
+                  fontWeight="700" textAnchor="middle" opacity={1}
+                >{nStun}</text>
               </g>
             )}
 
             {/* X label */}
-            <text x={cx} y={h - 6} fontSize={12} fill={isSelected ? "#006C49" : "#94A3B8"} fontWeight={isSelected ? 700 : 500} textAnchor="middle">
+            <text x={cx} y={h - 12} fontSize={12} fill={isSelected ? "#006C49" : "#94A3B8"} fontWeight={isSelected ? 700 : 500} textAnchor="middle">
               Bln {d.bulanKe === 0 ? 1 : d.bulanKe < 6 ? d.bulanKe + 1 : d.bulanKe}
             </text>
 
-            {/* Total Value Annotation if selected */}
+            {/* Total annotation when selected */}
             {isSelected && (
-              <text x={cx} y={stunY - (stunH <= 12 && stunH > 0 ? 18 : 10)} fontSize={13} fill="#0B1C30" fontWeight="bold" textAnchor="middle">
+              <text x={cx} y={stunY - (stunH <= 18 && stunH > 0 ? 22 : 12)} fontSize={14} fill="#0B1C30" fontWeight="bold" textAnchor="middle">
                 {nNorm + nInd + nStun}
               </text>
             )}
@@ -305,7 +365,7 @@ export default function DashboardDokter() {
       {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
       <aside className="w-64 flex-shrink-0 bg-white border-r border-[#BBCABF]/60 shadow-sm flex flex-col py-8">
         <div className="px-8 mb-10">
-          <h1 className="text-[#006C49] font-bold text-2xl tracking-widest leading-tight">POSYANDU<br />PINTAR</h1>
+          <h1 className="text-[#006C49] font-bold text-2xl tracking-widest leading-tight">POSYANDU<br />UTAMA</h1>
           <p className="text-[#6C7A71] text-xs font-medium tracking-wide mt-1">Clinical Data System</p>
         </div>
         <nav className="flex-1 px-4 flex flex-col gap-1">
@@ -596,7 +656,9 @@ export default function DashboardDokter() {
                   </div>
                 </div>
               </div>
-              <TrendChart selectedBulan={selectedBulan} activeTab={activeTab} visibleCount={visibleBulanCount} />
+              <div className="w-full overflow-x-auto -mx-6 px-6 my-6">
+                <TrendChart selectedBulan={selectedBulan} activeTab={activeTab} visibleCount={visibleBulanCount} />
+              </div>
 
               {/* Step-by-step controls */}
               {(() => {
@@ -801,7 +863,7 @@ export default function DashboardDokter() {
         {/* Footer */}
         <footer className="bg-white border-t border-[#E2E8F0] px-8 py-4 flex items-center justify-between flex-shrink-0">
           <span className="text-xs font-bold text-[#1E293B] tracking-widest uppercase">
-            © 2026 POSYANDU PINTAR • SECURE CLINICAL ENVIRONMENT
+            © 2026 Posyandu Utama, Puskesmas Airmadidi Bawah, Kelurahan Airmadidi Bawah, Kabupaten Minahasa Utara, Sulawesi Utara
           </span>
           <div className="flex items-center gap-6">
             {["Data Privacy", "Protocol Manual", "System Status"].map((l) => (

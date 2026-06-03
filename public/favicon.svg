@@ -1,0 +1,31 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="6" fill="#006C49"/>
+
+  <!-- Hospital building icon (fa-hospital) -->
+  <g transform="translate(16, 16)">
+    <!-- Main building body -->
+    <rect x="-8" y="-6" width="16" height="12" fill="white" rx="1"/>
+
+    <!-- Roof -->
+    <polygon points="0,-6 -10,-2 10,-2" fill="white"/>
+
+    <!-- Door -->
+    <rect x="-2" y="4" width="4" height="4" fill="#006C49" rx="0.5"/>
+
+    <!-- Left windows column -->
+    <rect x="-7" y="-4" width="2" height="2" fill="#006C49"/>
+    <rect x="-7" y="0" width="2" height="2" fill="#006C49"/>
+
+    <!-- Center windows column -->
+    <rect x="-2" y="-4" width="2" height="2" fill="#006C49"/>
+    <rect x="-2" y="0" width="2" height="2" fill="#006C49"/>
+
+    <!-- Right windows column -->
+    <rect x="3" y="-4" width="2" height="2" fill="#006C49"/>
+    <rect x="3" y="0" width="2" height="2" fill="#006C49"/>
+
+    <!-- Medical cross on door -->
+    <rect x="-0.5" y="5" width="1" height="2" fill="white"/>
+    <rect x="-1.5" y="5.5" width="3" height="1" fill="white"/>
+  </g>
+</svg>

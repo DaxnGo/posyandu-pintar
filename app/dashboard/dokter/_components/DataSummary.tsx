@@ -30,7 +30,7 @@ export default function DataSummary() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-1 h-6 bg-[#006C49] rounded-full"></div>
-          <h2 className="text-lg font-bold text-[#0B1C30]">Ringkasan Data Program Posyandu Pintar</h2>
+          <h2 className="text-lg font-bold text-[#0B1C30]">Ringkasan Data Program Posyandu Utama</h2>
         </div>
 
         <div className="grid grid-cols-1 gap-6">
