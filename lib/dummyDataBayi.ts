@@ -27,10 +27,12 @@ const metadata = [
 ];
 
 const dummyDataBayi: BayiPeriodData[] = metadata.map((item) => {
-  const total_subjek = dummyDataPasien.length;
-  const status_normal = dummyDataPasien.filter((p) => getStatusAt(p, item.bulanKe) === "Normal").length;
-  const status_terindikasi = dummyDataPasien.filter((p) => getStatusAt(p, item.bulanKe) === "Terindikasi").length;
-  const status_stunting = dummyDataPasien.filter((p) => getStatusAt(p, item.bulanKe) === "Stunting").length;
+  // Only count Gravida (PS-1xxx), exclude Primigravida (PS-2xxx)
+  const gravidaOnly = dummyDataPasien.filter((p) => !p.id.startsWith("PS-2"));
+  const total_subjek = gravidaOnly.length;
+  const status_normal = gravidaOnly.filter((p) => getStatusAt(p, item.bulanKe) === "Normal").length;
+  const status_terindikasi = gravidaOnly.filter((p) => getStatusAt(p, item.bulanKe) === "Terindikasi").length;
+  const status_stunting = gravidaOnly.filter((p) => getStatusAt(p, item.bulanKe) === "Stunting").length;
   const capaian_persen = parseFloat((Math.floor((status_normal / total_subjek) * 1000) / 10).toFixed(1));
 
   return {

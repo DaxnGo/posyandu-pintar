@@ -16,7 +16,7 @@ type BarItem = { label: string; value: number; color: string };
 
 function BarChart({ bars, title, subtitle, maxVal = 200 }: { bars: BarItem[]; title: string; subtitle: string; maxVal?: number }) {
   const chartH = 240;  // effective grid/bar area height
-  const yLabels = [0, 50, 100, 150, 200];
+  const yLabels = maxVal === 150 ? [0, 30, 60, 90, 120, 150] : [0, 50, 100, 150, 200];
 
   return (
     <div className="flex flex-col gap-4">
@@ -115,7 +115,7 @@ function GroupedBarChart({
   groups: GroupedBarGroup[]; title: string; subtitle: string; maxVal?: number;
 }) {
   const chartH = 240;
-  const yLabels = [0, 50, 100, 150, 200];
+  const yLabels = maxVal === 150 ? [0, 30, 60, 90, 120, 150] : [0, 50, 100, 150, 200];
   const BAR_W  = 36;
   const BAR_GAP = 4;   // gap between bars within a group
   const GRP_GAP = 32;  // gap between groups
@@ -486,7 +486,7 @@ export default function DashboardTren() {
                   bars={bars}
                   title="Distribusi Status Gizi Awal"
                   subtitle={selectedPeriode}
-                  maxVal={200}
+                  maxVal={150}
                 />
               ) : (
                 <GroupedBarChart

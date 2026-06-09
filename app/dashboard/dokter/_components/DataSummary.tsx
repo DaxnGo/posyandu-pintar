@@ -128,7 +128,7 @@ export default function DataSummary() {
           <div className="flex items-start gap-3 p-4 bg-[#F1F5F9] border border-[#E2E8F0] rounded-lg">
             <Info className="w-4 h-4 text-[#64748B] flex-shrink-0 mt-0.5" />
             <p className="text-xs text-[#64748B]">
-              Data ringkasan menampilkan baseline periode April 2023. Bayi total adalah agregat dari 150 bayi dari Ibu Gravida + 50 bayi dari Ibu Primigravida.
+              Data ringkasan menampilkan baseline periode April 2023. Bayi total adalah 150 dari Ibu Gravida. Primigravida tidak memiliki bayi (hanya data ibu yang dipantau).
             </p>
           </div>
         </div>

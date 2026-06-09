@@ -29,8 +29,8 @@ function TrendChart({ selectedBulan, activeTab, visibleCount }: { selectedBulan:
     : dummyDataIbu.filter((d) => d.bulanKe >= 6);
 
   const isBayiTab = activeTab === "bayi";
-  const yLabels = [0, 40, 80, 120, 160, 200];
-  const maxVal = 200;
+  const maxVal = isBayiTab ? 150 : 200;
+  const yLabels = isBayiTab ? [0, 30, 60, 90, 120, 150] : [0, 40, 80, 120, 160, 200];
   const scaleY = (val: number) => (val / maxVal) * chartH;
 
   // ── Ibu: two intro columns before monthly data ──────────────────────────

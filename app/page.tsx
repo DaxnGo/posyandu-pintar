@@ -167,7 +167,7 @@ function HeroSection() {
             className="flex flex-wrap items-center gap-6 pt-4"
           >
             {[
-              { value: "200", label: "Subjek Aktif" },
+              { value: "150", label: "Bayi Dipantau" },
               { value: "36", label: "Bulan Pantau" },
               { value: "100%", label: "Target Zero Stunting" },
             ].map((s) => (
